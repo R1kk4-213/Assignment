@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TutorHub - HCMUT{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='img/hcmut/logo.png') }}" alt="BK TutorHub" class="navbar-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}#rewarding-tutor">
+                            <i class="bi bi-star-fill"></i> Rewarding Tutor
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}#about-us">
+                            <i class="bi bi-envelope"></i> Contact
+                        </a>
+                    </li>
+                    {% if session.user %}
+                    <li class="nav-item">
+                        <span class="nav-link text-muted">
+                            <i class="bi bi-person-circle"></i> {{ session.user.name }}
+                        </span>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="bi bi-box-arrow-in-right"></i> Sign In
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    {% block footer %}
+    <footer class="mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>About the Program</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Introduction to the Tutor Program</a></li>
+                        <li><a href="#">Benefits for Students</a></li>
+                        <li><a href="#">Roles & Responsibilities</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Support</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Frequently Asked Questions (FAQ)</a></li>
+                        <li><a href="#">Contact Program Admins</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Contact</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-white"><i class="bi bi-youtube" style="font-size: 24px;"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-instagram" style="font-size: 24px;"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-linkedin" style="font-size: 24px;"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-1">© 2025 Ho Chi Minh City University of Technology (HCMUT) - Vietnam National University, Ho Chi Minh City.</p>
+                    <p>Developed by TutorHub Team. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

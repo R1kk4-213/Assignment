@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}TutorHub Home{% endblock %}
+
+{% block extra_css %}
+<style>
+    .home-hero {
+        background: linear-gradient(135deg, #0a6efc 0%, #2fa6ff 100%);
+        color: #fff;
+        padding: 60px 0;
+    }
+    .hero-card {
+        background: rgba(255,255,255,0.15);
+        border-radius: 20px;
+        padding: 40px;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+    .hero-image {
+        border-radius: 18px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.2);
+    }
+    .section-title {
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    .feature-card {
+        border-radius: 18px;
+        padding: 24px;
+        height: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background-color: #fff;
+    }
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 45px rgba(0,0,0,0.08);
+    }
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(10, 110, 252, 0.1);
+        color: #0a6efc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
+    .benefits-list li {
+        margin-bottom: 12px;
+        padding-left: 32px;
+        position: relative;
+    }
+    .benefits-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: #0a6efc;
+        font-weight: 700;
+    }
+    .gallery-card {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        background: #fff;
+    }
+    .gallery-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+    .gallery-caption {
+        padding: 12px 16px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="home-hero">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <div class="hero-card">
+                    <p class="text-uppercase small mb-2 opacity-75">Tutor Support Program</p>
+                    <h1 class="display-6 fw-bold mb-3">Tutor Support Program at HCMUT</h1>
+                    <p class="lead mb-4">Connecting tutors, students, and administrators through a single intelligent platform designed specifically for the HCMUT community.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#" class="btn btn-light btn-lg px-4">Enroll Now</a>
+                        <a href="#" class="btn btn-outline-light btn-lg px-4">Program Detail</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="{{ url_for('static', filename='img/hcmut/campus.png') }}" alt="HCMUT campus" class="img-fluid hero-image">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="section-title text-center">Program Overview</h2>
+        <p class="lead text-muted text-center mx-auto" style="max-width: 900px;">
+            The Tutor Support Program streamlines how we connect faculty, graduate tutors, and undergraduates. The platform supports tutor-student matching, session scheduling, progress tracking, and feedback collection, enabling the university to make informed decisions and deliver personalized support at scale.
+        </p>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Key Program Features</h2>
+        <div class="row g-4">
+            {% for feature in features %}
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi {{ feature.icon }}"></i>
+                    </div>
+                    <h5>{{ feature.title }}</h5>
+                    <p class="text-muted mb-0">{{ feature.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">Program Benefits</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <ul class="benefits-list list-unstyled fs-5 text-muted">
+                    {% for benefit in benefits %}
+                    <li>{{ benefit }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">Program in Action</h2>
+        <div class="row g-4">
+            {% for item in gallery %}
+            <div class="col-md-4">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.caption }}">
+                    <div class="gallery-caption">{{ item.caption }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+

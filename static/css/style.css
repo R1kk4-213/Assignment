@@ -1,0 +1,168 @@
+/* TutorHub Custom Styles */
+
+:root {
+    --primary-blue: #0066cc;
+    --dark-blue: #004499;
+    --light-gray: #f5f5f5;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scroll-behavior: smooth;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-weight: bold;
+    color: var(--primary-blue) !important;
+}
+
+/* Logo Styles */
+.navbar-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+.login-logo {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.login-form-logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+/* Hero Section */
+.hero-section {
+    background: var(--primary-blue);
+    color: white;
+    padding: 80px 0;
+}
+
+.btn-primary-custom {
+    background: white;
+    color: var(--primary-blue);
+    border: none;
+    padding: 12px 30px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background: #f0f0f0;
+    color: var(--primary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Tutor Cards */
+.tutor-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.tutor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.tutor-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #666;
+}
+
+.star-rating {
+    color: #ffc107;
+    font-size: 1.2rem;
+}
+
+.star-empty {
+    color: #ddd;
+}
+
+/* Footer */
+footer {
+    background: var(--primary-blue);
+    color: white;
+    padding: 40px 0 20px;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    text-decoration: underline;
+    color: #f0f0f0;
+}
+
+/* Alerts */
+.alert {
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+/* Smooth Scroll Offset */
+html {
+    scroll-padding-top: 80px;
+}
+
+/* Section Spacing */
+section {
+    scroll-margin-top: 80px;
+}
+
+/* Responsive Images */
+.img-fluid {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Custom Button Styles */
+.btn-outline-primary {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Loading Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
