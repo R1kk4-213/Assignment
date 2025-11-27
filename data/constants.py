@@ -47,6 +47,37 @@ USERS = {
     }
 }
 
+TUTOR_PROFILE = {
+    'id': '2352778',
+    'name': 'Nguyen Hoai Nam',
+    'email': 'nam.strong@hcmut.edu.vn',
+    'faculty': 'Faculty of Computer Science and Engineering',
+    'role': 'Tutor',
+    'status': 'Active',
+    'faculty_department': 'Computer Science and Engineering',
+    'profile_picture': 'img/asset/avatar.png',
+    'biography': (
+        'As a dedicated software engineering student and a peer tutor at HCMUT, '
+        'I am deeply passionate about fostering a collaborative learning environment. '
+        'My academic journey has equipped me with strong problem-solving skills and a solid '
+        'foundation in computer science principles. I specialize in machine learning, computer '
+        'vision and data algorithms. Through the Tutor/Mentor program, I aim to share my knowledge, '
+        'assist fellow students in overcoming academic challenges, and inspire a greater interest in '
+        'technology. I believe in a patient and engaging approach to teaching, tailoring my methods to '
+        'suit individual learning styles. Beyond academics, I enjoy coding personal projects, exploring '
+        'new technologies, and participating in university hackathons. I am committed to continuous '
+        'improvement and making a positive impact within the HCMUT community.'
+    ),
+    'phone_number': '+84901234567',
+    'areas_of_expertise': [
+        'Artificial Intelligence',
+        'Machine Learning',
+        'Natural Language Processing',
+        'Computer Vision',
+        'Data Structures'
+    ]
+}
+
 PROGRAM_FEATURES = [
     {
         'icon': 'bi-person-badge',

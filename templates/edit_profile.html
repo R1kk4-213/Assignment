@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile | TutorHub{% endblock %}
+
+{% block content %}
+<section class="profile-page py-5">
+    <div class="container">
+        <form method="POST" class="card profile-card p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <h1 class="mb-1">Edit Profile</h1>
+                    <p class="text-muted mb-0">View your essential university and system details. These fields are read only.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('view_profile') }}" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Save</button>
+                </div>
+            </div>
+
+            <div class="section-card mb-4">
+                <div class="section-card__header">
+                    <h5 class="mb-1">Core Information</h5>
+                    <p class="text-muted mb-0">View your essential university and system details. These fields are read only.</p>
+                </div>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">Full Name</label>
+                        <input type="text" class="form-control readonly-field" value="{{ profile.name }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">Student/Staff ID</label>
+                        <input type="text" class="form-control readonly-field" value="{{ profile.id }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">University Email</label>
+                        <input type="text" class="form-control readonly-field" value="{{ profile.email }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">Faculty/Department</label>
+                        <input type="text" class="form-control readonly-field" value="{{ profile.faculty_department }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">Account Status</label>
+                        <input type="text" class="form-control readonly-field" value="{{ profile.status }}" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">Role</label>
+                        <input type="text" class="form-control readonly-field" value="{{ profile.role }}" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card mb-4">
+                <div class="section-card__header">
+                    <h5 class="mb-1">Personal Information</h5>
+                    <p class="text-muted mb-0">Manage your public profile and contact details.</p>
+                </div>
+                <div class="row g-3 align-items-start mt-2">
+                    <div class="col-md-4 text-center">
+                        <span class="text-muted d-block mb-3">Profile Picture</span>
+                        <img src="{{ url_for('static', filename=profile.profile_picture) }}" alt="{{ profile.name }}" class="profile-avatar mb-3">
+                        <button class="btn btn-outline-secondary rounded-pill px-4" type="button">
+                            <i class="bi bi-upload me-2"></i>Upload New Photo
+                        </button>
+                        <p class="text-muted small mt-2 mb-0">Max: 2MB, .JPG/.PNG</p>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label text-muted">Biography</label>
+                        <textarea class="form-control" rows="7" name="biography" placeholder="Enter your biography">{{ profile.biography }}</textarea>
+                        <div class="d-flex justify-content-between text-muted small mt-1">
+                            <span>845/1000 characters</span>
+                        </div>
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted">Phone Number</label>
+                                <input type="text" class="form-control" name="phone_number" value="{{ profile.phone_number }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-card__header">
+                    <h5 class="mb-2">Areas of Expertise</h5>
+                </div>
+                <div class="expertise-chip-list d-flex flex-wrap gap-2 mb-3" id="expertiseChips">
+                    {% for expertise in profile.areas_of_expertise %}
+                    <span class="badge expertise-pill-edit d-flex align-items-center gap-2" data-value="{{ expertise }}">
+                        {{ expertise }}
+                        <button class="btn btn-link p-0 remove-chip" type="button" aria-label="Remove {{ expertise }}">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </span>
+                    {% endfor %}
+                </div>
+                <div class="input-group expertise-input">
+                    <input type="text" id="expertiseInput" class="form-control" placeholder="Add an expertise (e.g., AI/ML)">
+                    <button class="btn btn-outline-primary" type="button" id="addExpertiseBtn">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                </div>
+                <input type="hidden" name="areas_of_expertise" id="expertiseField" value="{{ profile.areas_of_expertise | join(',') }}">
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        const chipsContainer = document.getElementById('expertiseChips');
+        const input = document.getElementById('expertiseInput');
+        const field = document.getElementById('expertiseField');
+        const addBtn = document.getElementById('addExpertiseBtn');
+
+        function normalizeValue(value) {
+            return value.trim().replace(/\s+/g, ' ');
+        }
+
+        function syncField() {
+            const values = [...chipsContainer.querySelectorAll('.expertise-pill-edit')]
+                .map(chip => chip.dataset.value);
+            field.value = values.join(',');
+        }
+
+        function createChip(value) {
+            const chip = document.createElement('span');
+            chip.className = 'badge expertise-pill-edit d-flex align-items-center gap-2';
+            chip.dataset.value = value;
+            chip.innerHTML = `${value}<button class="btn btn-link p-0 remove-chip" type="button"><i class="bi bi-x"></i></button>`;
+            chipsContainer.appendChild(chip);
+        }
+
+        addBtn?.addEventListener('click', () => {
+            const value = normalizeValue(input.value);
+            if (!value) return;
+            const exists = [...chipsContainer.querySelectorAll('.expertise-pill-edit')]
+                .some(chip => chip.dataset.value.toLowerCase() === value.toLowerCase());
+            if (exists) {
+                input.value = '';
+                return;
+            }
+            createChip(value);
+            input.value = '';
+            syncField();
+        });
+
+        chipsContainer?.addEventListener('click', (event) => {
+            if (event.target.closest('.remove-chip')) {
+                const chip = event.target.closest('.expertise-pill-edit');
+                chip.remove();
+                syncField();
+            }
+        });
+    })();
+</script>
+{% endblock %}
+

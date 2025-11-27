@@ -20,31 +20,43 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
+                <ul class="navbar-nav mx-auto nav-main-links">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}#rewarding-tutor">
-                            <i class="bi bi-star-fill"></i> Rewarding Tutor
+                        <a class="nav-link" href="{{ url_for('home') if session.user else url_for('index') }}">
+                            <i class="bi bi-house-door"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}#about-us">
-                            <i class="bi bi-envelope"></i> Contact
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-mortarboard"></i> My Tutors
                         </a>
                     </li>
-                    {% if session.user %}
                     <li class="nav-item">
-                        <span class="nav-link text-muted">
-                            <i class="bi bi-person-circle"></i> {{ session.user.name }}
-                        </span>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">
-                            <i class="bi bi-box-arrow-in-right"></i> Sign In
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-journal-bookmark"></i> Resources
                         </a>
                     </li>
-                    {% endif %}
                 </ul>
+                <div class="d-flex align-items-center gap-4 nav-actions">
+                    {% if session.user %}
+                    <div class="d-flex align-items-center gap-3 nav-icon-set">
+                        <a href="#" class="nav-icon-link">
+                            <i class="bi bi-bell"></i>
+                        </a>
+                        <a href="#" class="nav-icon-link">
+                            <i class="bi bi-chat-dots"></i>
+                        </a>
+                    </div>
+                    <a href="{{ url_for('view_profile') }}" class="nav-avatar-link d-flex align-items-center gap-2">
+                        <img src="{{ url_for('static', filename='img/asset/avatar.png') }}" alt="{{ session.user.name }}" class="nav-avatar">
+                        <i class="bi bi-caret-down-fill"></i>
+                    </a>
+                    {% else %}
+                    <a class="btn btn-outline-primary nav-profile-btn" href="{{ url_for('login') }}">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>

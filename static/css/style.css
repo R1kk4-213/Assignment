@@ -17,6 +17,54 @@ body {
     color: var(--primary-blue) !important;
 }
 
+.nav-main-links .nav-link {
+    color: #4c5566;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.nav-main-links .nav-link:hover {
+    color: var(--primary-blue);
+}
+
+.nav-main-links .bi {
+    font-size: 1rem;
+}
+
+.nav-profile-btn {
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-weight: 600;
+}
+
+.nav-icon-link {
+    color: #4c5566;
+    font-size: 1.25rem;
+}
+
+.nav-icon-link:hover {
+    color: var(--primary-blue);
+}
+
+.nav-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e4e9f2;
+}
+
+.nav-avatar-link {
+    color: #4c5566;
+    font-weight: 600;
+}
+
+.nav-avatar-link:hover {
+    color: var(--primary-blue);
+}
+
 /* Logo Styles */
 .navbar-logo {
     height: 40px;
@@ -164,5 +212,115 @@ section {
 
 .fade-in {
     animation: fadeIn 0.6s ease-out;
+}
+
+/* Profile Pages */
+.profile-page {
+    background: #ffffff;
+    min-height: 100vh;
+}
+
+.profile-card,
+.section-card {
+    border: 1px solid #e4e9f2;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    background-color: #fff;
+}
+
+.section-card {
+    padding: 24px;
+}
+
+.section-card__header h5 {
+    font-weight: 600;
+}
+
+.reference-note {
+    letter-spacing: 0.02em;
+}
+
+.profile-page .form-control {
+    border-radius: 12px;
+    border: 1px solid #e1e7f0;
+    padding: 12px 16px;
+    background-color: #fff;
+    color: #0f172a;
+}
+
+.profile-page textarea.form-control {
+    min-height: 150px;
+}
+
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #e4e9f2;
+    background: #fff;
+}
+
+.expertise-pill,
+.expertise-pill-edit {
+    background-color: #f5e9ff;
+    color: #6b1aa4;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 500;
+    border: 1px solid rgba(107, 26, 164, 0.1);
+}
+
+.expertise-pill-edit {
+    background-color: #e6f3ff;
+    color: #0056b3;
+    border: 1px solid rgba(0, 86, 179, 0.2);
+}
+
+.expertise-pill-edit .remove-chip {
+    color: inherit;
+}
+
+.role-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background-color: #2d8bff;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: none;
+}
+
+.profile-tabs .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.profile-tabs .nav-link.active {
+    border-bottom-color: #2563eb;
+    color: #2563eb;
+    background: transparent;
+}
+
+.readonly-field,
+.form-control[readonly] {
+    background-color: #f1f3f6;
+    border-radius: 12px;
+    border: 1px solid #d7dce5;
+    padding: 12px 16px;
+    color: #6b7280;
+}
+
+.expertise-input .form-control {
+    border-radius: 999px 0 0 999px;
+    padding: 12px 16px;
+}
+
+.expertise-input .btn {
+    border-radius: 0 999px 999px 0;
 }
 
