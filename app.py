@@ -14,6 +14,7 @@ from data import (
     PROGRAM_FEATURES,
     PROGRAM_BENEFITS,
     PROGRAM_GALLERY,
+    TUTOR_PROFILE,
 )
 
 app = Flask(__name__)
@@ -31,6 +32,17 @@ def authenticate_user(username, password):
     if username in USERS and USERS[username]['password'] == password:
         return USERS[username]
     return None
+
+def get_tutor_profile():
+    """Return the active tutor profile."""
+    return TUTOR_PROFILE
+
+def update_tutor_profile(bio, phone, areas):
+    """Persist editable fields from the profile form."""
+    TUTOR_PROFILE['biography'] = bio
+    TUTOR_PROFILE['phone_number'] = phone
+    TUTOR_PROFILE['areas_of_expertise'] = areas
+    return TUTOR_PROFILE
 
 
 # ==================== PRESENTATION LAYER ====================
@@ -95,6 +107,56 @@ def home():
         features=PROGRAM_FEATURES,
         benefits=PROGRAM_BENEFITS,
         gallery=PROGRAM_GALLERY
+    )
+
+@app.route('/view-profile')
+def view_profile():
+    """Display tutor profile information."""
+    user = session.get('user')
+    if not user:
+        flash('Vui lòng đăng nhập để tiếp tục.', 'error')
+        return redirect(url_for('login'))
+    
+    profile = get_tutor_profile()
+    return render_template(
+        'view_profile.html',
+        user=user,
+        profile=profile
+    )
+
+@app.route('/edit-profile', methods=['GET', 'POST'])
+def edit_profile():
+    """Allow editing of the expertise area only."""
+    user = session.get('user')
+    if not user:
+        flash('Vui lòng đăng nhập để tiếp tục.', 'error')
+        return redirect(url_for('login'))
+    
+    profile = get_tutor_profile()
+    if request.method == 'POST':
+        raw_expertise = request.form.get('areas_of_expertise', '')
+        biography = request.form.get('biography', '').strip()
+        phone_number = request.form.get('phone_number', '').strip()
+        
+        parsed = [tag.strip() for tag in raw_expertise.split(',') if tag.strip()]
+        if not parsed:
+            flash('Vui lòng nhập ít nhất một lĩnh vực chuyên môn.', 'error')
+            return redirect(url_for('edit_profile'))
+        if not biography:
+            flash('Vui lòng nhập Biography.', 'error')
+            return redirect(url_for('edit_profile'))
+        if not phone_number:
+            flash('Vui lòng nhập Phone Number.', 'error')
+            return redirect(url_for('edit_profile'))
+        
+        update_tutor_profile(biography, phone_number, parsed)
+        flash('Cập nhật hồ sơ thành công!', 'success')
+        return redirect(url_for('view_profile'))
+    
+    return render_template(
+        'edit_profile.html',
+        user=user,
+        profile=profile
     )
 
 if __name__ == '__main__':
