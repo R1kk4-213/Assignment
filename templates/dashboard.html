@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Overview - TutorHub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+    /* Hide navbar for dashboard page */
+    body .navbar {
+        display: none !important;
+    }
+    body {
+        padding-top: 0 !important;
+    }
+    /* Hide footer for dashboard page */
+    body footer {
+        display: none !important;
+    }
+    /* Flash messages positioning for dashboard */
+    .flash-messages-container {
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo-section">
+            <img src="{{ url_for('static', filename='img/hcmut/LogoHcmut.jpg') }}" alt="HCMUT Logo" class="logo-image" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px;">
+            <span class="logo-text">TutorHub</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="9 22 9 12 15 12 15 22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Home</span>
+            </a>
+
+            <a href="{{ url_for('tutor_management') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="9" cy="7" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Tutor Management</span>
+            </a>
+
+            <a href="{{ url_for('configuration') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 1v6m0 6v6m8.66-15.66l-4.24 4.24m-8.49 8.49l-4.24 4.24M23 12h-6m-6 0H1m15.66 8.66l-4.24-4.24m-8.49-8.49l-4.24-4.24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Configuration</span>
+            </a>
+
+            <a href="{{ url_for('reports') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 3v18h18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M18 17l-5-5-3 3-5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <input type="text" class="search-input" placeholder="Search Tutors, Setting, ...">
+            </div>
+        </header>
+
+        <!-- Page Title -->
+        <h1 class="page-title">Dashboard Overview</h1>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Tutors</span>
+                    <svg class="stat-icon stat-icon-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="9" cy="7" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="stat-value">{{ stats.total_tutors }}</div>
+                <div class="stat-change {% if stats.total_change_pct >= 0 %}positive{% else %}negative{% endif %}">
+                    {% if stats.total_change_pct >= 0 %}+{% endif %}{{ stats.total_change_pct }}% vs. last month
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Active Tutors</span>
+                    <svg class="stat-icon stat-icon-green" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="22 4 12 14.01 9 11.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="stat-value">{{ stats.active_tutors }}</div>
+                <div class="stat-change {% if stats.active_change_pct >= 0 %}positive{% else %}negative{% endif %}">
+                    {% if stats.active_change_pct >= 0 %}+{% endif %}{{ stats.active_change_pct }}% vs. last month
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Recent Activity -->
+            <section class="activity-section">
+                <h2 class="section-title">Recent Activity</h2>
+                
+                <div class="activity-list">
+                    {% for activity in recent_activities %}
+                    <div class="activity-item" data-action="{{ activity.action }}">
+                        <div class="activity-content">
+                            <div class="activity-text">{{ activity.description }}</div>
+                            <div class="activity-time">Time: {{ activity.time }} | Date: {{ activity.date }}</div>
+                        </div>
+                        <svg class="activity-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="6 9 12 15 18 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Chart Section -->
+            <section class="chart-section">
+                <div class="chart-header">
+                    <div>
+                        <h2 class="section-title">Monthly Tutor Adding Trends</h2>
+                        <p class="chart-subtitle">56 new additions in the last 2 months.</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="tutorChart"></canvas>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<script>
+// Chart Data from backend
+const chartData = {
+    labels: {{ monthly_trends.labels | tojson }},
+    datasets: [
+        {
+            label: 'Added',
+            data: {{ monthly_trends.added | tojson }},
+            backgroundColor: '#3b82f6',
+            borderRadius: 4,
+            barThickness: 20
+        },
+        {
+            label: 'Removed',
+            data: {{ monthly_trends.removed | tojson }},
+            backgroundColor: '#1e3a8a',
+            borderRadius: 4,
+            barThickness: 20
+        }
+    ]
+};
+
+// Chart Configuration
+const config = {
+    type: 'bar',
+    data: chartData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    padding: 20,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                padding: 12,
+                borderRadius: 8,
+                displayColors: true,
+                callbacks: {
+                    title: function(context) {
+                        return context[0].label;
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 20,
+                ticks: {
+                    stepSize: 10,
+                    font: {
+                        size: 11
+                    },
+                    color: '#9ca3af'
+                },
+                grid: {
+                    color: '#e5e7eb',
+                    drawBorder: false,
+                    drawTicks: false
+                }
+            },
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false
+                },
+                ticks: {
+                    font: {
+                        size: 11
+                    },
+                    color: '#6b7280'
+                }
+            }
+        },
+        layout: {
+            padding: {
+                top: 10,
+                right: 10,
+                bottom: 10,
+                left: 10
+            }
+        }
+    }
+};
+
+// Render Chart
+window.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('tutorChart');
+    if (ctx) {
+        new Chart(ctx, config);
+    }
+    
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    const activityItems = document.querySelectorAll('.activity-item');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            // Search in activity items
+            activityItems.forEach(function(item) {
+                const text = item.querySelector('.activity-text').textContent.toLowerCase();
+                if (text.includes(searchTerm) || searchTerm === '') {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show message if no results
+            const visibleItems = Array.from(activityItems).filter(item => item.style.display !== 'none');
+            const activityList = document.querySelector('.activity-list');
+            let noResultsMsg = document.querySelector('.no-results-message');
+            
+            if (visibleItems.length === 0 && searchTerm !== '') {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('div');
+                    noResultsMsg.className = 'no-results-message';
+                    noResultsMsg.style.cssText = 'padding: 20px; text-align: center; color: #9ca3af; font-size: 14px;';
+                    noResultsMsg.textContent = 'No activities found matching "' + searchTerm + '"';
+                    activityList.appendChild(noResultsMsg);
+                } else {
+                    noResultsMsg.textContent = 'No activities found matching "' + searchTerm + '"';
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
