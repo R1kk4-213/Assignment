@@ -44,6 +44,13 @@ USERS = {
         'email': 'admin@hcmut.edu.vn',
         'role': 'admin',
         'name': 'Administrator'
+    },
+    'quan': {
+        'username': 'quan',
+        'password': 'quan123',
+        'email': 'tutor01@hcmut.edu.vn',
+        'role': 'tutor',
+        'name': 'Nguyễn Văn A'
     }
 }
 
@@ -112,6 +119,90 @@ PROGRAM_GALLERY = [
     {
         'caption': 'Community Events',
         'image': 'img/hcmut/campus.png'
+    }
+]
+
+# Students data
+STUDENTS = [
+    {
+        'id': 1,
+        'name': 'Nguyễn Hoài Nam',
+        'student_id': '2211234',
+        'email': 'hoainam@hcmut.edu.vn',
+        'phone': '0901234567',
+        'major': 'Computer Science'
+    },
+    {
+        'id': 2,
+        'name': 'Trần Thị Mai',
+        'student_id': '2211235',
+        'email': 'mai.tran@hcmut.edu.vn',
+        'phone': '0901234568',
+        'major': 'Software Engineering'
+    },
+    {
+        'id': 3,
+        'name': 'Lê Văn Bình',
+        'student_id': '2211236',
+        'email': 'binh.le@hcmut.edu.vn',
+        'phone': '0901234569',
+        'major': 'Computer Science'
+    },
+    {
+        'id': 4,
+        'name': 'Phạm Thị Hương',
+        'student_id': '2211237',
+        'email': 'huong.pham@hcmut.edu.vn',
+        'phone': '0901234570',
+        'major': 'Data Science'
+    },
+    {
+        'id': 5,
+        'name': 'Hoàng Minh Tuấn',
+        'student_id': '2211238',
+        'email': 'tuan.hoang@hcmut.edu.vn',
+        'phone': '0901234571',
+        'major': 'Computer Engineering'
+    }
+]
+
+# Sessions data (this will be modified in-memory during runtime)
+SESSIONS = [
+    {
+        'id': 1,
+        'student_id': 1,
+        'student_name': 'Nguyễn Hoài Nam',
+        'subject': 'Data Structures and Algorithms',
+        'date': '2025-11-28',
+        'time': '09:00',
+        'duration': '2 hours',
+        'status': 'Scheduled',
+        'tutor_name': 'Nguyễn Văn A',
+        'location': 'Room B4-301'
+    },
+    {
+        'id': 2,
+        'student_id': 2,
+        'student_name': 'Trần Thị Mai',
+        'subject': 'Linear Algebra',
+        'date': '2025-11-29',
+        'time': '14:00',
+        'duration': '1.5 hours',
+        'status': 'Scheduled',
+        'tutor_name': 'Nguyễn Văn A',
+        'location': 'Room B4-302'
+    },
+    {
+        'id': 3,
+        'student_id': 3,
+        'student_name': 'Lê Văn Bình',
+        'subject': 'Calculus 1',
+        'date': '2025-11-30',
+        'time': '10:00',
+        'duration': '2 hours',
+        'status': 'Scheduled',
+        'tutor_name': 'Nguyễn Văn A',
+        'location': 'Room B4-303'
     }
 ]
 

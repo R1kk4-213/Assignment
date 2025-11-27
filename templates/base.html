@@ -32,10 +32,22 @@
                         </a>
                     </li>
                     {% if session.user %}
+                    {% if session.user.role == 'tutor' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('edit_session') }}">
+                            <i class="bi bi-calendar-week"></i> Manage Session
+                        </a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <span class="nav-link text-muted">
                             <i class="bi bi-person-circle"></i> {{ session.user.name }}
                         </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
