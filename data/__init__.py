@@ -6,6 +6,9 @@ from .constants import (
     PROGRAM_FEATURES,
     PROGRAM_BENEFITS,
     PROGRAM_GALLERY,
+    RESOURCES,
+    KEYWORDS,
+    FILE_TYPES,
 )
 
 __all__ = [
@@ -14,5 +17,8 @@ __all__ = [
     'PROGRAM_FEATURES',
     'PROGRAM_BENEFITS',
     'PROGRAM_GALLERY',
+    'RESOURCES',
+    'KEYWORDS',
+    'FILE_TYPES',
 ]
 
