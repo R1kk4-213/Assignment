@@ -8,9 +8,6 @@ Layer Architecture:
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from datetime import datetime
-from collections import defaultdict
-import json
-import os
 
 from data import (
     TUTORS,
@@ -24,99 +21,25 @@ from data import (
 app = Flask(__name__)
 app.secret_key = 'tutorhub_secret_key_2025'  # For session management
 
-# Data persistence files
-ACTIVITIES_FILE = 'data/activities.json'
-TUTORS_FILE = 'data/tutors.json'
-CONFIG_FILE = 'data/config.json'
-
-# Default configuration
-DEFAULT_CONFIG = {
+# Simple hardcoded configuration
+CONFIG = {
     'max_students': 10,
     'session_duration': 90
 }
 
-# Helper functions for data persistence
-def load_activities():
-    """Load activities from JSON file"""
-    if os.path.exists(ACTIVITIES_FILE):
-        try:
-            with open(ACTIVITIES_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except:
-            return list(RECENT_ACTIVITIES)
-    return list(RECENT_ACTIVITIES)
-
-def save_activities(activities):
-    """Save activities to JSON file"""
-    try:
-        os.makedirs('data', exist_ok=True)
-        with open(ACTIVITIES_FILE, 'w', encoding='utf-8') as f:
-            json.dump(activities, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"Error saving activities: {e}")
-
-def load_tutors():
-    """Load tutors from JSON file"""
-    if os.path.exists(TUTORS_FILE):
-        try:
-            with open(TUTORS_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except:
-            return list(TUTORS)
-    return list(TUTORS)
-
-def save_tutors(tutors):
-    """Save tutors to JSON file"""
-    try:
-        os.makedirs('data', exist_ok=True)
-        with open(TUTORS_FILE, 'w', encoding='utf-8') as f:
-            json.dump(tutors, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"Error saving tutors: {e}")
-
+# Simple helper function for activities
 def add_activity(action, description):
-    """Add new activity and persist to file"""
-    activities = load_activities()
+    """Add new activity to hardcoded list"""
     new_activity = {
         'action': action,
         'description': description,
         'time': datetime.now().strftime('%H:%M'),
         'date': datetime.now().strftime('%Y-%m-%d')
     }
-    activities.insert(0, new_activity)
+    RECENT_ACTIVITIES.insert(0, new_activity)
     # Keep only last 20 activities
-    if len(activities) > 20:
-        activities = activities[:20]
-    save_activities(activities)
-    return activities
-
-def load_config():
-    """Load configuration from JSON file"""
-    if os.path.exists(CONFIG_FILE):
-        try:
-            with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except:
-            return DEFAULT_CONFIG.copy()
-    return DEFAULT_CONFIG.copy()
-
-def save_config(config):
-    """Save configuration to JSON file"""
-    try:
-        os.makedirs('data', exist_ok=True)
-        with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
-            json.dump(config, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"Error saving config: {e}")
-
-# Initialize data from files on startup
-try:
-    TUTORS.clear()
-    TUTORS.extend(load_tutors())
-    RECENT_ACTIVITIES.clear()
-    RECENT_ACTIVITIES.extend(load_activities())
-except Exception as e:
-    print(f"Error initializing data: {e}")
+    if len(RECENT_ACTIVITIES) > 20:
+        RECENT_ACTIVITIES.pop()
 
 
 # ==================== BUSINESS LOGIC LAYER ====================
@@ -193,91 +116,28 @@ def get_monthly_trends():
     }
 
 def get_reports_data(period='monthly'):
-    """Generate reports data from activities and tutors
-    Args:
-        period: 'monthly', 'quarterly', or 'yearly'
-    """
+    """Generate simple hardcoded reports data"""
     import random
-    from collections import defaultdict
     
-    activities = load_activities()
-    
-    # Define time periods
+    # Simple hardcoded data based on period
     if period == 'yearly':
         labels = ['2020', '2021', '2022', '2023', '2024', '2025']
-        # Map month to year range
-        def get_period_key(date_obj):
-            return str(date_obj.year)
+        page_views = [1200, 1500, 1800, 2100, 2400, 2700]
+        clicks = [800, 1000, 1200, 1400, 1600, 1800]
+        inquiries = [1800, 2000, 2200, 2400, 2600, 2800]
+        enrollments = [1200, 1400, 1600, 1800, 2000, 2200]
     elif period == 'quarterly':
         labels = ['Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024', 'Q1 2025', 'Q2 2025']
-        # Map month to quarter
-        def get_period_key(date_obj):
-            quarter = (date_obj.month - 1) // 3 + 1
-            return f'Q{quarter} {date_obj.year}'
+        page_views = [360, 450, 540, 630, 720, 810]
+        clicks = [240, 300, 360, 420, 480, 540]
+        inquiries = [540, 600, 660, 720, 780, 840]
+        enrollments = [360, 420, 480, 540, 600, 660]
     else:  # monthly
         labels = ['January', 'February', 'March', 'April', 'May', 'June']
-        month_map = {
-            1: 'January', 2: 'February', 3: 'March', 
-            4: 'April', 5: 'May', 6: 'June',
-            7: 'January', 8: 'February', 9: 'March',
-            10: 'April', 11: 'May', 12: 'June'
-        }
-        def get_period_key(date_obj):
-            return month_map.get(date_obj.month)
-    
-    # Initialize data arrays
-    page_views = [120, 320, 240, 80, 210, 230][:len(labels)]
-    clicks = [80, 180, 110, 60, 150, 160][:len(labels)]
-    
-    # Extend arrays if needed
-    while len(page_views) < len(labels):
-        page_views.append(random.randint(100, 300))
-        clicks.append(random.randint(50, 200))
-    
-    # Count activities per period
-    period_activity_count = defaultdict(int)
-    for activity in activities:
-        if 'date' in activity:
-            try:
-                date_obj = datetime.strptime(activity['date'], '%Y-%m-%d')
-                period_name = get_period_key(date_obj)
-                if period_name and period_name in labels:
-                    period_idx = labels.index(period_name)
-                    period_activity_count[period_idx] += 1
-            except:
-                pass
-    
-    # Adjust traffic based on activities
-    for period_idx, activity_count in period_activity_count.items():
-        multiplier = 1 if period == 'monthly' else (3 if period == 'quarterly' else 12)
-        page_views[period_idx] += activity_count * (15 * multiplier)
-        clicks[period_idx] += activity_count * (8 * multiplier)
-    
-    # Enrollment Trends - based on tutor additions
-    inquiries = []
-    enrollments = []
-    
-    for label in labels:
-        # Count tutors added in this period
-        tutors_in_period = 0
-        for tutor in TUTORS:
-            if 'added_date' in tutor:
-                try:
-                    date_obj = datetime.strptime(tutor['added_date'], '%Y-%m-%d')
-                    if get_period_key(date_obj) == label:
-                        tutors_in_period += 1
-                except:
-                    pass
-        
-        # Generate inquiries and enrollments based on tutor count
-        multiplier = 1 if period == 'monthly' else (3 if period == 'quarterly' else 12)
-        base_inquiries = (150 + (tutors_in_period * 8)) * multiplier
-        base_enrollments = (100 + (tutors_in_period * 5)) * multiplier
-        
-        # Add some variation
-        variation = 10 * multiplier
-        inquiries.append(base_inquiries + random.randint(-variation, variation * 2))
-        enrollments.append(base_enrollments + random.randint(-variation, variation))
+        page_views = [120, 320, 240, 180, 210, 280]
+        clicks = [80, 180, 110, 120, 150, 190]
+        inquiries = [180, 220, 190, 200, 210, 240]
+        enrollments = [120, 150, 130, 140, 150, 170]
     
     return {
         'traffic': {
@@ -427,14 +287,9 @@ def toggle_tutor_status(tutor_id):
             tutor['active'] = not tutor['active']
             status = 'activated' if tutor['active'] else 'removed'
             
-            # Save tutors to file
-            save_tutors(TUTORS)
-            
-            # Add activity and save to file
+            # Add activity
             action = 'activate' if tutor['active'] else 'remove'
             add_activity(action, f'{status.capitalize()} tutor: {tutor["name"]}')
-            RECENT_ACTIVITIES.clear()
-            RECENT_ACTIVITIES.extend(load_activities())
             
             return {
                 'success': True, 
@@ -516,13 +371,8 @@ def promote_to_tutor():
     
     TUTORS.append(new_tutor)
     
-    # Save tutors to file
-    save_tutors(TUTORS)
-    
-    # Add activity and save to file
+    # Add activity
     add_activity('add', f'Added new tutor: {user_data.get("name", username)}')
-    RECENT_ACTIVITIES.clear()
-    RECENT_ACTIVITIES.extend(load_activities())
     
     return {
         'success': True, 
@@ -542,8 +392,7 @@ def configuration():
         flash('You do not have permission to access this page.', 'error')
         return redirect(url_for('home'))
     
-    config = load_config()
-    return render_template('configuration.html', user=user, config=config)
+    return render_template('configuration.html', user=user, config=CONFIG)
 
 @app.route('/save-configuration', methods=['POST'])
 def save_configuration():
@@ -556,17 +405,12 @@ def save_configuration():
         max_students = int(request.form.get('maxStudents', 10))
         session_duration = int(request.form.get('sessionDuration', 90))
         
-        config = {
-            'max_students': max_students,
-            'session_duration': session_duration
-        }
-        
-        save_config(config)
+        # Update hardcoded config
+        CONFIG['max_students'] = max_students
+        CONFIG['session_duration'] = session_duration
         
         # Add activity
         add_activity('update', f'Updated configuration: Max students={max_students}, Session duration={session_duration}min')
-        RECENT_ACTIVITIES.clear()
-        RECENT_ACTIVITIES.extend(load_activities())
         
         flash('Configuration saved successfully!', 'success')
         return redirect(url_for('configuration'))
