@@ -54,6 +54,34 @@ def index():
     tutors = get_all_tutors()
     return render_template('index.html', tutors=tutors)
 
+#Huy work
+
+@app.route('/track_progress')
+def track_progress():
+    """Track Student Progress"""
+    tutors = get_all_tutors()
+    return render_template('track_progress.html', tutors=tutors)
+
+@app.route('/feedback_list')
+def feedback_list():
+    """Get all the feedback"""
+    tutors = get_all_tutors()
+    return render_template('feedback_list.html', tutors=tutors)
+
+@app.route('/tutor_home')
+def tutor_home():
+    """Get the dashboard of tutors"""
+    tutors = get_all_tutors()
+    return render_template('tutor_home.html', tutors=tutors)
+
+@app.route('/submit_feedback')
+def submit_feedback():
+    """Submit feedback for tutors"""
+    tutors = get_all_tutors()
+    return render_template('submit_feedback.html', tutors=tutors)
+
+#End of Huy work
+
 @app.route('/login')
 def login():
     """Login page - Choose login method"""

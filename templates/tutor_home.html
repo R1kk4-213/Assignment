@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TutorHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* --- Variables --- */
+    :root {
+        --primary-blue: #0085FF;
+        --bg-light: #F8F9FD;
+        --text-dark: #1E293B;
+        --text-gray: #64748B;
+        --green-track: #10B981;
+    }
+
+    body {
+        background-color: var(--bg-light);
+    }
+
+    /* --- Navbar Styles --- */
+    .nav-link-custom {
+        color: var(--text-gray); font-weight: 500; text-decoration: none;
+        display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+        transition: color 0.2s;
+    }
+    .nav-link-custom:hover { color: var(--primary-blue); }
+
+    /* Active Blue Button Style */
+    .nav-btn-active {
+        background-color: var(--primary-blue); color: white !important;
+        font-weight: 600; border-radius: 6px; padding: 8px 20px;
+        display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 4px 6px rgba(0, 133, 255, 0.2);
+    }
+
+    /* --- General Card Styles --- */
+    .content-card {
+        background: white; border-radius: 12px; border: 1px solid #E2E8F0;
+        padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .card-title { font-weight: 700; font-size: 1.1rem; color: var(--text-dark); margin-bottom: 4px; }
+    .card-subtitle { font-size: 0.85rem; color: var(--text-gray); margin-bottom: 20px; }
+    .btn-more { width: 100%; font-weight: 600; background-color: #0ea5e9; border:none; padding: 10px; }
+    .btn-more:hover { background-color: #0284c7; }
+
+    /* --- Hero Section --- */
+    .hero-card {
+        background-color: var(--primary-blue); color: white;
+        border-radius: 16px; padding: 30px; margin-bottom: 24px;
+    }
+    .hero-avatar {
+        width: 80px; height: 80px; border-radius: 50%; border: 3px solid white; object-fit: cover;
+    }
+    .hero-btn {
+        background: white; color: var(--primary-blue); font-weight: 600;
+        border: none; padding: 10px 20px; border-radius: 6px; flex: 1; transition: transform 0.2s;
+    }
+    .hero-btn:hover { transform: translateY(-2px); background: #f0f9ff; }
+    
+    .hero-btn-outline {
+        background: transparent; color: white; border: 1px solid white;
+        font-weight: 600; padding: 10px 20px; border-radius: 6px; flex: 1;
+    }
+    .hero-btn-outline:hover { background: rgba(255,255,255,0.1); color: white; }
+
+    .stat-card {
+        background: white; color: var(--text-dark); border-radius: 8px;
+        padding: 15px; text-align: center; flex: 1;
+    }
+    .stat-number { font-size: 1.5rem; font-weight: 700; color: var(--primary-blue); display: block; }
+    .stat-label { font-size: 0.85rem; color: var(--text-gray); font-weight: 500; }
+
+    /* --- List Items --- */
+    .list-item {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .avatar-small { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; margin-right: 12px; }
+    .item-name { font-weight: 600; font-size: 0.95rem; color: var(--text-dark); margin: 0; }
+    .item-sub { font-size: 0.8rem; color: var(--text-gray); }
+    .badge-track { 
+        background-color: #D1FAE5; color: #059669; 
+        font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 600;
+    }
+    .btn-details {
+        border: 1px solid #E2E8F0; background: white; color: var(--text-dark);
+        font-size: 0.85rem; padding: 6px 12px; border-radius: 6px;
+    }
+    .btn-details:hover { background: #f8fafc; }
+
+    /* --- Pending Table --- */
+    .pending-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ccc; display: flex; align-items: center; justify-content: center; color: white; }
+    .btn-confirm { background: #0EA5E9; color: white; font-size: 0.8rem; padding: 4px 12px; border: none; border-radius: 4px; width: 100%; margin-bottom: 4px; }
+    .btn-reject { background: #94A3B8; color: white; font-size: 0.8rem; padding: 4px 12px; border: none; border-radius: 4px; width: 100%; }
+
+    /* --- Chart --- */
+    .chart-container {
+        display: flex; align-items: flex-end; justify-content: space-between;
+        height: 200px; padding-top: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0;
+    }
+    .chart-col {
+        display: flex; flex-direction: column; align-items: center;
+        width: 12%; height: 100%; justify-content: flex-end;
+    }
+    .chart-bar {
+        background-color: #0ea5e9; width: 100%; border-radius: 4px 4px 0 0; transition: height 1s ease;
+    }
+    .chart-label { font-size: 0.75rem; color: var(--text-gray); margin-top: 8px; }
+</style>
+{% endblock %}
+
+{# --- NAV OVERRIDE: This deletes the base.html nav and puts the blue Dashboard button here --- #}
+{% block navbar_center %}
+<div class="mx-auto d-flex align-items-center gap-4">
+    <a href="#" class="nav-btn-active">
+        <i class="bi bi-graph-up"></i> Dashboard
+    </a>
+
+    <a href="{{ url_for('track_progress') }}" class="nav-link-custom">
+        <i class="bi bi-book-half"></i> Session Management
+    </a>
+    <a href="{{ url_for('feedback_list') }}" class="nav-link-custom">
+        <i class="bi bi-mortarboard"></i> Feedback
+    </a>
+    <a href="#" class="nav-link-custom">
+        <i class="bi bi-folder2-open"></i> Resources
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row g-4">
+        
+        <div class="col-lg-8">
+            
+            <div class="hero-card">
+                <div class="d-flex align-items-center gap-4 mb-4">
+                    <img src="https://i.pravatar.cc/150?img=11" alt="Profile" class="hero-avatar">
+                    <div>
+                        <h2 class="fw-bold mb-0">Good morning, Hoai Nam!</h2>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mb-4">
+                    <button class="hero-btn">Open a New Session</button>
+                    <button class="hero-btn-outline">Update My Availability</button>
+                </div>
+
+                <div class="d-flex gap-3">
+                    <div class="stat-card">
+                        <span class="stat-number">5</span>
+                        <span class="stat-label">Sessions This Week</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">4.8 <i class="bi bi-star-fill text-warning fs-6"></i></span>
+                        <span class="stat-label">Average Ratings</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h5 class="card-title">My Students</h5>
+                <p class="card-subtitle">Track progress for all your students.</p>
+
+                <div class="mb-3">
+                    <div class="list-item">
+                        <div class="d-flex align-items-center">
+                            <img src="https://i.pravatar.cc/150?img=59" class="avatar-small" alt="Student">
+                            <div>
+                                <h6 class="item-name">Huynh Nguyen Quoc Viet</h6>
+                                <span class="item-sub">Calculus 1</span>
+                            </div>
+                        </div>
+                        <span class="badge-track">On Track</span>
+                        <button class="btn-details">Details</button>
+                    </div>
+                    <div class="list-item">
+                        <div class="d-flex align-items-center">
+                            <img src="https://i.pravatar.cc/150?img=12" class="avatar-small" alt="Student">
+                            <div>
+                                <h6 class="item-name">Tran Lam Anh</h6>
+                                <span class="item-sub">Probability and Statistics</span>
+                            </div>
+                        </div>
+                        <span class="badge-track">On Track</span>
+                        <button class="btn-details">Details</button>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-more text-white">More</button>
+            </div>
+
+            <div class="content-card">
+                <h5 class="card-title">Pending Request(s)</h5>
+                
+                <div class="table-responsive mt-3">
+                    <table class="table align-middle">
+                        <thead class="text-uppercase text-muted small">
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Course</th>
+                                <th class="text-end">Decision</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="pending-avatar"><i class="bi bi-person-fill"></i></div>
+                                        <span class="fw-bold">Huỳnh Thị Bích</span>
+                                    </div>
+                                </td>
+                                <td class="text-muted">Probability and Statistics (MT2013)</td>
+                                <td style="width: 120px;">
+                                    <button class="btn-confirm">Confirm</button>
+                                    <button class="btn-reject">Reject</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-primary btn-more text-white">More</button>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            
+            <div class="content-card">
+                <h5 class="card-title">Upcoming Sessions</h5>
+                <p class="card-subtitle">Sessions scheduled for this week.</p>
+
+                <div class="mb-3">
+                    <div class="list-item">
+                        <div class="d-flex align-items-center">
+                            <img src="https://i.pravatar.cc/150?img=59" class="avatar-small" alt="User">
+                            <div>
+                                <h6 class="item-name">Huynh Nguyen Quoc Viet</h6>
+                                <span class="item-sub">Tuesday, 23/10 at 14:00</span>
+                            </div>
+                        </div>
+                        <button class="btn-details">Details</button>
+                    </div>
+                    <div class="list-item">
+                        <div class="d-flex align-items-center">
+                            <img src="https://i.pravatar.cc/150?img=3" class="avatar-small" alt="User">
+                            <div>
+                                <h6 class="item-name">Dang Mau Anh Quan</h6>
+                                <span class="item-sub">Wednesday, 24/10 at 7:00</span>
+                            </div>
+                        </div>
+                        <button class="btn-details">Details</button>
+                    </div>
+                    <div class="list-item">
+                        <div class="d-flex align-items-center">
+                            <img src="https://i.pravatar.cc/150?img=12" class="avatar-small" alt="User">
+                            <div>
+                                <h6 class="item-name">Tran Lam Anh</h6>
+                                <span class="item-sub">Friday, 26/10 at 14:00</span>
+                            </div>
+                        </div>
+                        <button class="btn-details">Details</button>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-more text-white">More</button>
+            </div>
+
+            <div class="content-card">
+                <h5 class="card-title">Performance Overview</h5>
+                <p class="card-subtitle">Number of sessions per month.</p>
+
+                <h6 class="fw-bold mb-3">Sessions</h6>
+                
+                <div class="chart-container">
+                    <div class="d-flex flex-column justify-content-between h-100 position-absolute" style="left: 40px; font-size: 0.75rem; color: #94A3B8;">
+                        <span>12</span><span>8</span><span>4</span><span>0</span>
+                    </div>
+
+                    <div class="chart-col">
+                        <div class="chart-bar" style="height: 45%;"></div>
+                        <span class="chart-label">May</span>
+                    </div>
+                    <div class="chart-col">
+                        <div class="chart-bar" style="height: 90%;"></div>
+                        <span class="chart-label">June</span>
+                    </div>
+                    <div class="chart-col">
+                        <div class="chart-bar" style="height: 80%;"></div>
+                        <span class="chart-label">July</span>
+                    </div>
+                    <div class="chart-col">
+                        <div class="chart-bar" style="height: 70%;"></div>
+                        <span class="chart-label">August</span>
+                    </div>
+                    <div class="chart-col">
+                        <div class="chart-bar" style="height: 95%;"></div>
+                        <span class="chart-label">Sept</span>
+                    </div>
+                    <div class="chart-col">
+                        <div class="chart-bar" style="height: 70%;"></div>
+                        <span class="chart-label">Oct</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-more text-white mt-3">More</button>
+            </div>
+
+        </div> 
+    </div>
+</div>
+{% endblock %}

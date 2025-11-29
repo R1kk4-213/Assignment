@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Feedback - TutorHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* --- Variables --- */
+    :root {
+        --primary-blue: #0085FF;
+        --hero-bg: #0ea5e9; /* Slightly lighter blue for the header */
+        --text-dark: #0f172a;
+        --text-gray: #64748B;
+        --star-color: #fbbf24;
+        --border-color: #e2e8f0;
+    }
+
+    body {
+        background-color: #ffffff;
+    }
+
+    /* --- Hero Profile Section --- */
+    .hero-section {
+        background-color: var(--hero-bg);
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 40px;
+    }
+
+    .profile-img-container {
+        position: relative;
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        object-fit: cover;
+    }
+
+    .online-badge {
+        position: absolute;
+        bottom: 5px;
+        right: 0;
+        background-color: #22c55e;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 12px;
+        border: 2px solid white;
+    }
+
+    .tutor-name { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .tutor-subject { font-size: 1.1rem; opacity: 0.9; margin-bottom: 0.5rem; }
+    
+    .tutor-stats {
+        display: flex;
+        gap: 20px;
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .stat-item { display: flex; align-items: center; gap: 5px; }
+
+    .btn-message {
+        background: white;
+        color: var(--text-dark);
+        font-weight: 600;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 6px;
+    }
+    .btn-message:hover { background-color: #f1f5f9; }
+
+    /* --- Feedback Form Container --- */
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-title { font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem; }
+    .page-subtitle { color: var(--text-gray); margin-bottom: 30px; }
+
+    /* --- The Card --- */
+    .feedback-card {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 40px;
+        background: white;
+    }
+
+    .session-info { margin-bottom: 30px; }
+    .session-title { font-weight: 700; font-size: 1.1rem; color: var(--text-dark); margin-bottom: 5px; }
+    .session-date { color: var(--text-gray); font-size: 0.9rem; }
+
+    /* Rating Stars */
+    .rating-label { font-weight: 600; color: var(--text-dark); margin-bottom: 10px; display: block; }
+    .star-rating {
+        color: var(--star-color);
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin-bottom: 25px;
+    }
+    .star-rating i:hover { color: #f59e0b; }
+
+    /* Inputs */
+    .form-label { font-weight: 600; color: var(--text-dark); font-size: 0.95rem; }
+    .form-control-custom {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 12px;
+        color: var(--text-dark);
+        resize: vertical;
+        min-height: 120px;
+    }
+    .form-control-custom::placeholder { color: #94a3b8; font-size: 0.95rem; }
+
+    /* Checkbox */
+    .form-check-input { width: 1.2em; height: 1.2em; border-color: #cbd5e1; }
+    .form-check-label { color: var(--text-dark); font-weight: 500; margin-left: 5px; }
+
+    /* Buttons */
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn-outline-custom {
+        border: 1px solid var(--border-color);
+        background: white;
+        color: var(--text-dark);
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 6px;
+    }
+    .btn-outline-custom:hover { background-color: #f8fafc; }
+
+    .btn-primary-custom {
+        background-color: #0085FF;
+        color: white;
+        font-weight: 600;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 6px;
+    }
+    .btn-primary-custom:hover { background-color: #006ec9; }
+
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="hero-section">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between">
+                
+                <div class="d-flex align-items-center gap-4">
+                    <div class="profile-img-container">
+                        <img src="https://i.pravatar.cc/150?img=11" alt="Profile" class="profile-img">
+                        <div class="online-badge">Online</div>
+                    </div>
+                    
+                    <div>
+                        <h1 class="tutor-name">Nguyen Hoai Nam</h1>
+                        <div class="tutor-subject">Calculus 1</div>
+                        <div class="tutor-stats">
+                            <span class="stat-item"><i class="bi bi-star-fill text-warning"></i> 4.8 Average Rating</span>
+                            <span class="stat-item"><i class="bi bi-lightning-charge-fill"></i> 120 Sessions</span>
+                            <span class="stat-item"><i class="bi bi-clock-history"></i> 1 Year Experience</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn-message">
+                        <i class="bi bi-chat-left-text me-2"></i> Message
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <div class="form-container">
+            
+            <h2 class="page-title">Submit Feedback for Tutor</h2>
+            <p class="page-subtitle">Your feedback is valuable and helps improve the quality of tutoring sessions.</p>
+
+            <div class="feedback-card">
+                
+                <div class="session-info">
+                    <div class="session-title">Session: Functions and Limits</div>
+                    <div class="session-date">Thursday, August 20, 2025 - 10:00 AM</div>
+                </div>
+
+                <form>
+                    <div class="mb-3">
+                        <label class="rating-label">Rating</label>
+                        <div class="star-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star text-muted" style="opacity: 0.4;"></i>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="comments" class="form-label">Comments</label>
+                        <textarea class="form-control form-control-custom" id="comments" 
+                            placeholder="Share your experience, highlight what went well, and suggest areas for improvement for your tutor."></textarea>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="anonymousCheck">
+                        <label class="form-check-label" for="anonymousCheck">
+                            Submit anonymously
+                        </label>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-outline-custom">Save as Draft</button>
+                        <button type="submit" class="btn btn-primary-custom">Submit Feedback</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
