@@ -59,7 +59,6 @@ USERS = {
         'role': 'admin',
         'name': 'Administrator'
     },
-<<<<<<< HEAD
     'nguyenB234':{
         'username': 'nguyenB234',
         'password': 'tutor123',
@@ -136,14 +135,13 @@ USERS = {
         'email': 'ronaldo@hcmut.edu.vn',
         'role': 'student',
         'name': 'Cristiano Ronaldo'
-=======
+    },
     'quan': {
         'username': 'quan',
         'password': 'quan123',
         'email': 'tutor01@hcmut.edu.vn',
         'role': 'tutor',
         'name': 'Nguyễn Văn A'
->>>>>>> origin/create_session
     }
     
 }
@@ -247,7 +245,6 @@ PROGRAM_GALLERY = [
     }
 ]
 
-<<<<<<< HEAD
 RECENT_ACTIVITIES = [
     {'text': 'Tutor added: Vu Duc Viet Anh (Calculus)', 'time': '2 minutes ago', 'timestamp': '2025-11-27 14:30'},
     {'text': 'System config updated: Email notifications', 'time': '1 hour ago', 'timestamp': '2025-11-27 13:30'},

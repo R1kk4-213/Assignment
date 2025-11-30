@@ -32,8 +32,6 @@
                             <i class="bi bi-mortarboard"></i> My Tutors
                         </a>
                     </li>
-<<<<<<< HEAD
-=======
                     {% if session.user %}
                     {% if session.user.role == 'tutor' %}
                     <li class="nav-item">
@@ -42,21 +40,12 @@
                         </a>
                     </li>
                     {% endif %}
->>>>>>> origin/create_session
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('materials') }}">
                             <i class="bi bi-journal-text"></i> Resources
                         </a>
                     </li>
-<<<<<<< HEAD
-=======
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </a>
-                    </li>
-                    {% else %}
->>>>>>> origin/create_session
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('index') }}#about-us">
                             <i class="bi bi-envelope"></i> Contact

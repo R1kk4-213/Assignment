@@ -62,7 +62,6 @@ def authenticate_user(username, password):
         return USERS[username]
     return None
 
-<<<<<<< HEAD
 def get_tutor_profile():
     """Return the active tutor profile."""
     return TUTOR_PROFILE
@@ -180,8 +179,6 @@ def get_resource_by_id(resource_id: int):
     return None
 
 
-=======
->>>>>>> origin/create_session
 # ==================== PRESENTATION LAYER ====================
 # Routes - Handle HTTP requests and responses
 
@@ -247,11 +244,8 @@ def login_hcmut():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-<<<<<<< HEAD
 
         # Use your authenticate_user directly
-=======
->>>>>>> origin/create_session
         user = authenticate_user(username, password)
 
         if user:
@@ -276,12 +270,8 @@ def login_hcmut():
                 return redirect(url_for('tutor_dashboard'))
 
         else:
-<<<<<<< HEAD
             flash('Incorrect username or password!', 'error')
 
-=======
-            flash('Tên đăng nhập hoặc mật khẩu không đúng!', 'error')
->>>>>>> origin/create_session
     return render_template('login_form.html', login_type='HCMUT Login')
 
 
@@ -298,12 +288,8 @@ def login_admin():
             flash('Admin login successful!', 'success')
             return redirect(url_for('dashboard'))
         else:
-<<<<<<< HEAD
             flash('Invalid username or password!', 'error')
     
-=======
-            flash('Tên đăng nhập hoặc mật khẩu không đúng!', 'error')
->>>>>>> origin/create_session
     return render_template('login_form.html', login_type='Administrator Login')
 
 @app.route('/home')
@@ -799,5 +785,4 @@ def run_app():
     app.run(debug=True, port=5000)
 
 if __name__ == '__main__':
-    threading.Timer(1.5, lambda: open_chrome_incognito("http://127.0.0.1:5000")).start()
     run_app()
