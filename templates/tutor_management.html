@@ -1,0 +1,786 @@
+{% extends "base.html" %}
+
+{% block title %}Tutor Management - TutorHub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+    /* Hide navbar and footer for dashboard pages */
+    body .navbar,
+    body footer {
+        display: none !important;
+    }
+    body {
+        padding-top: 0 !important;
+    }
+    /* Flash messages positioning */
+    .flash-messages-container {
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+    }
+    
+    /* Tutor Management Specific Styles */
+    .management-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    
+    .filter-bar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    
+    .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 300px;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 10px 12px 10px 40px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .search-box svg {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        color: #9ca3af;
+    }
+    
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: white;
+        font-size: 14px;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .filter-btn:hover {
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
+    
+    .filter-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .total-count {
+        font-size: 14px;
+        color: #6b7280;
+    }
+    
+    .add-btn {
+        padding: 10px 20px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .add-btn:hover {
+        background: #2563eb;
+    }
+    
+    /* Add Tutor Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 10001;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.2s;
+    }
+    
+    .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        animation: slideUp 0.3s;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-header {
+        padding: 24px 24px 20px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+    
+    .close-btn:hover {
+        background: #f3f4f6;
+        color: #1f2937;
+    }
+    
+    .modal-body {
+        padding: 24px;
+    }
+    
+    .search-container {
+        position: relative;
+        margin-bottom: 24px;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 12px 12px 12px 44px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: all 0.2s;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 18px;
+    }
+    
+    .search-results {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .user-item {
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    
+    .user-item:hover {
+        border-color: #3b82f6;
+        background: #f0f9ff;
+    }
+    
+    .user-info {
+        flex: 1;
+    }
+    
+    .user-name {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 4px;
+        font-size: 15px;
+    }
+    
+    .user-details {
+        font-size: 13px;
+        color: #6b7280;
+    }
+    
+    .select-btn {
+        padding: 8px 20px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .select-btn:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6b7280;
+    }
+    
+    .empty-state i {
+        font-size: 48px;
+        color: #d1d5db;
+        margin-bottom: 16px;
+    }
+    
+    .empty-state p {
+        font-size: 15px;
+        margin: 0;
+    }
+    
+    .tutors-table-container {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e5e7eb;
+    }
+    
+    .table-header {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 20px;
+    }
+    
+    .tutors-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .tutors-table thead th {
+        text-align: left;
+        padding: 12px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #f3f4f6;
+    }
+    
+    .tutors-table tbody tr {
+        border-bottom: 1px solid #f3f4f6;
+        transition: background 0.2s;
+    }
+    
+    .tutors-table tbody tr:hover {
+        background: #f9fafb;
+    }
+    
+    .tutors-table tbody td {
+        padding: 16px;
+        font-size: 14px;
+        color: #1f2937;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .status-badge.active {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .status-badge.removed {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .actions-btn {
+        background: none;
+        border: none;
+        color: #6b7280;
+        cursor: pointer;
+        font-size: 20px;
+        padding: 4px 8px;
+        transition: color 0.2s;
+        position: relative;
+    }
+    
+    .actions-btn:hover {
+        color: #1f2937;
+    }
+    
+    .action-menu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 8px 0;
+        min-width: 150px;
+        z-index: 1000;
+        display: none;
+    }
+    
+    .action-menu.show {
+        display: block;
+    }
+    
+    .action-menu button {
+        width: 100%;
+        padding: 10px 16px;
+        border: none;
+        background: none;
+        text-align: left;
+        font-size: 14px;
+        color: #374151;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .action-menu button:hover {
+        background: #f3f4f6;
+    }
+    
+    .action-menu button.remove {
+        color: #dc2626;
+    }
+    
+    .action-menu button.activate {
+        color: #16a34a;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #9ca3af;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo-section">
+            <img src="{{ url_for('static', filename='img/hcmut/LogoHcmut.jpg') }}" alt="HCMUT Logo" class="logo-image" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px;">
+            <span class="logo-text">TutorHub</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('dashboard') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="9 22 9 12 15 12 15 22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Home</span>
+            </a>
+
+            <a href="{{ url_for('tutor_management') }}" class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="9" cy="7" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Tutor Management</span>
+            </a>
+
+            <a href="{{ url_for('configuration') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 1v6m0 6v6m8.66-15.66l-4.24 4.24m-8.49 8.49l-4.24 4.24M23 12h-6m-6 0H1m15.66 8.66l-4.24-4.24m-8.49-8.49l-4.24-4.24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Configuration</span>
+            </a>
+
+            <a href="{{ url_for('reports') }}" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 3v18h18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M18 17l-5-5-3 3-5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <!-- <div class="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <input type="text" class="search-input" placeholder="Search Tutors, Setting, ...">
+            </div> -->
+        </header>
+
+        <!-- Page Title -->
+        <h1 class="page-title">Tutor Management</h1>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8" stroke-width="2"/>
+                    <path d="M21 21l-4.35-4.35" stroke-width="2"/>
+                </svg>
+                <input type="text" id="tutorSearch" placeholder="Search tutors...">
+            </div>
+            
+            <button class="filter-btn" id="statusFilter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" stroke-width="2"/>
+                </svg>
+                Filter by Status
+            </button>
+            
+            <span class="total-count">Total: <strong>{{ tutors|length }}</strong></span>
+            
+            <button class="add-btn" onclick="openAddModal()">Add</button>
+        </div>
+
+        <!-- Tutors Table -->
+        <div class="tutors-table-container">
+            <h2 class="table-header">All Tutors</h2>
+            
+            <table class="tutors-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tutorsTableBody">
+                    {% for tutor in tutors %}
+                    <tr data-status="{{ 'active' if tutor.active else 'removed' }}" data-tutor-id="{{ tutor.id }}">
+                        <td>{{ tutor.name }}</td>
+                        <td>{{ tutor.email }}</td>
+                        <td>
+                            <span class="status-badge {{ 'active' if tutor.active else 'removed' }}">
+                                {{ 'Active' if tutor.active else 'Remove' }}
+                            </span>
+                        </td>
+                        <td style="position: relative;">
+                            <button class="actions-btn" data-tutor-id="{{ tutor.id }}">⋯</button>
+                            <div class="action-menu" id="menu-{{ tutor.id }}">
+                                {% if tutor.active %}
+                                <button class="remove" onclick="toggleTutorStatus({{ tutor.id }}, false)">Remove Tutor</button>
+                                {% else %}
+                                <button class="activate" onclick="toggleTutorStatus({{ tutor.id }}, true)">Activate Tutor</button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="no-results" id="noResults" style="display: none;">
+                No tutors found matching your search.
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Add Tutor Modal -->
+<div id="addTutorModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add New Tutor</h3>
+            <button class="close-btn" onclick="closeAddModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="search-container">
+                <i class="bi bi-search search-icon"></i>
+                <input 
+                    type="text" 
+                    id="userSearchInput" 
+                    class="search-input" 
+                    placeholder="Search by name, username, or email..."
+                    oninput="handleSearchInput(this)"
+                >
+            </div>
+            <div id="searchResults" class="search-results">
+                <div class="empty-state">
+                    <i class="bi bi-search"></i>
+                    <p>Start typing to search for users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tutorSearch = document.getElementById('tutorSearch');
+    const statusFilter = document.getElementById('statusFilter');
+    const tableBody = document.getElementById('tutorsTableBody');
+    const noResults = document.getElementById('noResults');
+    const rows = tableBody.querySelectorAll('tr');
+    
+    let currentFilter = 'all'; // 'all', 'active', 'removed'
+    
+    // Search functionality
+    tutorSearch.addEventListener('input', function() {
+        filterTutors();
+    });
+    
+    // Status filter toggle
+    statusFilter.addEventListener('click', function() {
+        if (currentFilter === 'all') {
+            currentFilter = 'active';
+            statusFilter.textContent = 'Active Only';
+        } else if (currentFilter === 'active') {
+            currentFilter = 'removed';
+            statusFilter.textContent = 'Removed Only';
+        } else {
+            currentFilter = 'all';
+            statusFilter.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:16px;height:16px"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" stroke-width="2"/></svg> Filter by Status';
+        }
+        filterTutors();
+    });
+    
+    function filterTutors() {
+        const searchTerm = tutorSearch.value.toLowerCase().trim();
+        let visibleCount = 0;
+        
+        rows.forEach(function(row) {
+            const name = row.cells[0].textContent.toLowerCase();
+            const email = row.cells[1].textContent.toLowerCase();
+            const status = row.getAttribute('data-status');
+            
+            const matchesSearch = name.includes(searchTerm) || email.includes(searchTerm);
+            const matchesFilter = currentFilter === 'all' || status === currentFilter;
+            
+            if (matchesSearch && matchesFilter) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Show/hide no results message
+        if (visibleCount === 0) {
+            tableBody.style.display = 'none';
+            noResults.style.display = 'block';
+        } else {
+            tableBody.style.display = '';
+            noResults.style.display = 'none';
+        }
+    }
+    
+    // Toggle action menu
+    document.querySelectorAll('.actions-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const tutorId = this.getAttribute('data-tutor-id');
+            const menu = document.getElementById('menu-' + tutorId);
+            
+            // Close all other menus
+            document.querySelectorAll('.action-menu').forEach(function(m) {
+                if (m !== menu) m.classList.remove('show');
+            });
+            
+            menu.classList.toggle('show');
+        });
+    });
+    
+    // Close menus when clicking outside
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.action-menu').forEach(function(m) {
+            m.classList.remove('show');
+        });
+    });
+});
+
+// Toggle tutor status function
+function toggleTutorStatus(tutorId, activate) {
+    if (!confirm(`Are you sure you want to ${activate ? 'activate' : 'remove'} this tutor?`)) {
+        return;
+    }
+    
+    fetch(`/tutor/toggle-status/${tutorId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload page to reflect changes
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to update tutor status');
+    });
+}
+
+// Add Tutor Modal Functions
+function openAddModal() {
+    document.getElementById('addTutorModal').classList.add('show');
+    document.getElementById('userSearchInput').focus();
+    searchUsers(''); // Load all users initially
+}
+
+function closeAddModal() {
+    document.getElementById('addTutorModal').classList.remove('show');
+    document.getElementById('userSearchInput').value = '';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('addTutorModal');
+    if (e.target === modal) {
+        closeAddModal();
+    }
+});
+
+// Search users in database
+function searchUsers(query) {
+    fetch(`/search-users?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            const resultsContainer = document.getElementById('searchResults');
+            
+            if (data.users.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>No users found</p>
+                    </div>
+                `;
+            } else {
+                resultsContainer.innerHTML = data.users.map(user => `
+                    <div class="user-item">
+                        <div class="user-info">
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-details">
+                                <i class="bi bi-person"></i> ${user.username} 
+                                <span style="margin: 0 8px;">•</span>
+                                <i class="bi bi-envelope"></i> ${user.email}
+                            </div>
+                        </div>
+                        <button class="select-btn" onclick="promoteToTutor('${user.username}')">
+                            Select
+                        </button>
+                    </div>
+                `).join('');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('searchResults').innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <p>Error loading users</p>
+                </div>
+            `;
+        });
+}
+
+// Debounce function for search
+let searchTimeout;
+function handleSearchInput(input) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        searchUsers(input.value);
+    }, 300);
+}
+
+// Promote user to tutor
+function promoteToTutor(username) {
+    if (!confirm(`Are you sure you want to promote ${username} to tutor?`)) {
+        return;
+    }
+    
+    fetch('/promote-to-tutor', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: username })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeAddModal();
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to promote user to tutor');
+    });
+}
+</script>
+{% endblock %}
