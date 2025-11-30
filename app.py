@@ -6,8 +6,14 @@ Layer Architecture:
 - Data Layer: Hardcoded data
 """
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+# Load environment variables
+load_dotenv()
 
 from data import (
     TUTORS,
@@ -20,6 +26,10 @@ from data import (
 
 app = Flask(__name__)
 app.secret_key = 'tutorhub_secret_key_2025'  # For session management
+
+# Configure Gemini API
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'YOUR_API_KEY_HERE')
+genai.configure(api_key=GEMINI_API_KEY)
 
 # Simple hardcoded configuration
 CONFIG = {
@@ -433,6 +443,56 @@ def reports():
     period = request.args.get('period', 'monthly')
     reports_data = get_reports_data(period)
     return render_template('reports.html', user=user, reports_data=reports_data, current_period=period)
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """AI Chat endpoint using Gemini"""
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '')
+        
+        if not user_message:
+            return jsonify({'success': False, 'error': 'No message provided'}), 400
+        
+        # Create context about tutors
+        tutors_info = []
+        for tutor in TUTORS:
+            status = "active" if tutor.get('active', True) else "inactive"
+            tutors_info.append(
+                f"- {tutor['name']}: {tutor['title']}, teaches {tutor['subject']}, "
+                f"rating {tutor['rating']}/5.0, status: {status}"
+            )
+        
+        context = f"""You are an AI assistant for TutorHub, a tutor management system at HCMUT.
+
+Available tutors:
+{chr(10).join(tutors_info)}
+
+System configuration:
+- Max students per session: {CONFIG['max_students']}
+- Session duration: {CONFIG['session_duration']} minutes
+
+Answer user questions about tutors, subjects, ratings, and system information. 
+Be helpful, friendly, and concise. If asked about specific tutors, provide their details.
+Use emojis occasionally to be friendly. Keep responses under 100 words."""
+
+        # Call Gemini API - using gemini-2.0-flash (latest fast model)
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        response = model.generate_content(f"{context}\n\nUser question: {user_message}")
+        
+        ai_response = response.text
+        
+        return jsonify({
+            'success': True,
+            'response': ai_response
+        })
+        
+    except Exception as e:
+        print(f"Chat error: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': 'Failed to get AI response. Please check API key configuration.'
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
