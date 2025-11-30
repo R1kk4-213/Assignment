@@ -1,21 +1,9 @@
-{% extends "base.html" %}
+{% extends "admin_base.html" %}
 
 {% block title %}Dashboard Overview - TutorHub{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% block admin_extra_css %}
 <style>
-    /* Hide navbar for dashboard page */
-    body .navbar {
-        display: none !important;
-    }
-    body {
-        padding-top: 0 !important;
-    }
-    /* Hide footer for dashboard page */
-    body footer {
-        display: none !important;
-    }
     /* Flash messages positioning for dashboard */
     .flash-messages-container {
         top: 20px;
@@ -25,137 +13,88 @@
 </style>
 {% endblock %}
 
-{% block content %}
-<div class="dashboard-wrapper">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo-section">
-            <img src="{{ url_for('static', filename='img/hcmut/LogoHcmut.jpg') }}" alt="HCMUT Logo" class="logo-image" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px;">
-            <span class="logo-text">TutorHub</span>
+{% block admin_content %}
+<!-- Header -->
+<header class="dashboard-header">
+    <div class="search-container">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="11" cy="11" r="8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input type="text" class="search-input" placeholder="Search Tutors, Setting, ...">
+    </div>
+</header>
+
+<!-- Page Title -->
+<h1 class="page-title">Dashboard Overview</h1>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-label">Total Tutors</span>
+            <svg class="stat-icon stat-icon-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="9" cy="7" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </div>
+        <div class="stat-value">{{ stats.total_tutors }}</div>
+        <div class="stat-change {% if stats.total_change_pct >= 0 %}positive{% else %}negative{% endif %}">
+            {% if stats.total_change_pct >= 0 %}+{% endif %}{{ stats.total_change_pct }}% vs. last month
+        </div>
+    </div>
 
-        <nav class="sidebar-nav">
-            <a href="#" class="nav-item active">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <polyline points="9 22 9 12 15 12 15 22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Home</span>
-            </a>
+    <div class="stat-card">
+        <div class="stat-header">
+            <span class="stat-label">Active Tutors</span>
+            <svg class="stat-icon stat-icon-green" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="22 4 12 14.01 9 11.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="stat-value">{{ stats.active_tutors }}</div>
+        <div class="stat-change {% if stats.active_change_pct >= 0 %}positive{% else %}negative{% endif %}">
+            {% if stats.active_change_pct >= 0 %}+{% endif %}{{ stats.active_change_pct }}% vs. last month
+        </div>
+    </div>
+</div>
 
-            <a href="{{ url_for('tutor_management') }}" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="9" cy="7" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<!-- Content Grid -->
+<div class="content-grid">
+    <!-- Recent Activity -->
+    <section class="activity-section">
+        <h2 class="section-title">Recent Activity</h2>
+        
+        <div class="activity-list">
+            {% for activity in recent_activities %}
+            <div class="activity-item" data-action="{{ activity.action }}">
+                <div class="activity-content">
+                    <div class="activity-text">{{ activity.description }}</div>
+                    <div class="activity-time">Time: {{ activity.time }} | Date: {{ activity.date }}</div>
+                </div>
+                <svg class="activity-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polyline points="6 9 12 15 18 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <span>Tutor Management</span>
-            </a>
-
-            <a href="{{ url_for('configuration') }}" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12 1v6m0 6v6m8.66-15.66l-4.24 4.24m-8.49 8.49l-4.24 4.24M23 12h-6m-6 0H1m15.66 8.66l-4.24-4.24m-8.49-8.49l-4.24-4.24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Configuration</span>
-            </a>
-
-            <a href="{{ url_for('reports') }}" class="nav-item">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M3 3v18h18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M18 17l-5-5-3 3-5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>Reports</span>
-            </a>
-        </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Header -->
-        <header class="dashboard-header">
-            <div class="search-container">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="11" cy="11" r="8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <input type="text" class="search-input" placeholder="Search Tutors, Setting, ...">
             </div>
-        </header>
+            {% endfor %}
+        </div>
+    </section>
 
-        <!-- Page Title -->
-        <h1 class="page-title">Dashboard Overview</h1>
-
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Total Tutors</span>
-                    <svg class="stat-icon stat-icon-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="9" cy="7" r="4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <div class="stat-value">{{ stats.total_tutors }}</div>
-                <div class="stat-change {% if stats.total_change_pct >= 0 %}positive{% else %}negative{% endif %}">
-                    {% if stats.total_change_pct >= 0 %}+{% endif %}{{ stats.total_change_pct }}% vs. last month
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Active Tutors</span>
-                    <svg class="stat-icon stat-icon-green" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <polyline points="22 4 12 14.01 9 11.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <div class="stat-value">{{ stats.active_tutors }}</div>
-                <div class="stat-change {% if stats.active_change_pct >= 0 %}positive{% else %}negative{% endif %}">
-                    {% if stats.active_change_pct >= 0 %}+{% endif %}{{ stats.active_change_pct }}% vs. last month
-                </div>
+    <!-- Chart Section -->
+    <section class="chart-section">
+        <div class="chart-header">
+            <div>
+                <h2 class="section-title">Monthly Tutor Adding Trends</h2>
+                <p class="chart-subtitle">56 new additions in the last 2 months.</p>
             </div>
         </div>
 
-        <!-- Content Grid -->
-        <div class="content-grid">
-            <!-- Recent Activity -->
-            <section class="activity-section">
-                <h2 class="section-title">Recent Activity</h2>
-                
-                <div class="activity-list">
-                    {% for activity in recent_activities %}
-                    <div class="activity-item" data-action="{{ activity.action }}">
-                        <div class="activity-content">
-                            <div class="activity-text">{{ activity.description }}</div>
-                            <div class="activity-time">Time: {{ activity.time }} | Date: {{ activity.date }}</div>
-                        </div>
-                        <svg class="activity-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <polyline points="6 9 12 15 18 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-
-            <!-- Chart Section -->
-            <section class="chart-section">
-                <div class="chart-header">
-                    <div>
-                        <h2 class="section-title">Monthly Tutor Adding Trends</h2>
-                        <p class="chart-subtitle">56 new additions in the last 2 months.</p>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <canvas id="tutorChart"></canvas>
-                </div>
-            </section>
+        <div class="chart-container">
+            <canvas id="tutorChart"></canvas>
         </div>
-    </main>
+    </section>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>

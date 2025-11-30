@@ -3,7 +3,41 @@
 {% block title %}Resources - TutorHub{% endblock %}
 
 {% block extra_css %}
+<!-- Font Awesome for navbar icons -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-om8w+2Y7DQw1G02Vv2Y8Oj0tJ1mlz5c+vZLH2zyCsk3YQlUK+vkHq3WQ0q5+Y0hwfdrRZDWK31Dyu2a1s0F1g=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
 <style>
+    /* Navbar styling to match tutor_dashboard */
+    .navbar-nav.nav-main-links {
+        gap: 28px;
+    }
+    .navbar-nav .nav-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #4b5563;
+        padding: 6px 0;
+        border-bottom: 2px solid transparent;
+        transition: color 0.15s ease, border-color 0.15s ease;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .navbar-nav .nav-link i {
+        font-size: 14px;
+    }
+    .navbar-nav .nav-link:hover {
+        color: #0f68c7;
+    }
+    .navbar-nav .nav-link.active {
+        color: #0f68c7;
+        border-bottom-color: #0f68c7;
+    }
+
     .materials-hero { padding: 36px 0; }
     .filters-card { border-radius: 12px; padding: 18px; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,0.04); }
     .resource-card { border-radius: 12px; padding: 0; overflow: hidden; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
@@ -14,6 +48,35 @@
     .sort-controls .btn { min-width: 110px; }
     .search-input { border-radius: 40px; padding: 12px 18px; border: 1px solid #e7eefc; }
 </style>
+{% endblock %}
+
+{% block navbar_center %}
+<ul class="navbar-nav mx-auto nav-main-links">
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'tutor_dashboard' %}active{% endif %}" href="{{ url_for('tutor_dashboard') }}">
+            <i class="fa-solid fa-gauge-high"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'edit_session' %}active{% endif %}" href="{{ url_for('edit_session') }}">
+            <i class="fa-regular fa-calendar-check"></i>
+            <span>Session Management</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'feedback_list' %}active{% endif %}" href="{{ url_for('feedback_list') }}">
+            <i class="fa-regular fa-comment-dots"></i>
+            <span>Feedback</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.endpoint == 'materials' %}active{% endif %}" href="{{ url_for('materials') }}">
+            <i class="fa-regular fa-folder"></i>
+            <span>Resources</span>
+        </a>
+    </li>
+</ul>
 {% endblock %}
 
 {% block content %}

@@ -185,7 +185,10 @@ def get_resource_by_id(resource_id: int):
 @app.route('/')
 def index():
     """Landing page"""
-    tutors = get_all_tutors()
+    # Hard code 3 rewarding tutors
+    all_tutors = get_all_tutors()
+    rewarding_tutor_names = ['Dương Văn N', 'Vũ Đức Việt Anh', 'Lê Văn C']
+    tutors = [t for t in all_tutors if t['name'] in rewarding_tutor_names]
     return render_template('index.html', tutors=tutors)
 
 #Huy work
@@ -204,9 +207,8 @@ def feedback_list():
 
 @app.route('/tutor_home')
 def tutor_home():
-    """Get the dashboard of tutors"""
-    tutors = get_all_tutors()
-    return render_template('tutor_home.html', tutors=tutors)
+    """Redirect to tutor dashboard - kept for backward compatibility"""
+    return redirect(url_for('tutor_dashboard'))
 
 @app.route('/submit_feedback')
 def submit_feedback():
@@ -240,7 +242,7 @@ def login():
 
 @app.route('/login/hcmut', methods=['GET', 'POST'])
 def login_hcmut():
-    """HCMUT Login for only student + tutor"""
+    """HCMUT Login for student + tutor"""
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -249,6 +251,11 @@ def login_hcmut():
         user = authenticate_user(username, password)
 
         if user:
+            # Check if admin tries to login via HCMUT login
+            if user['role'] == 'admin':
+                flash('Please use Administrator Login for admin accounts.', 'error')
+                return redirect(url_for('login'))
+            
             # Save session without password
             session['user'] = {
                 'username': user['username'],
@@ -265,7 +272,7 @@ def login_hcmut():
             if user['role'] == 'student':
                 flash(f'Welcome student {user["name"]}!', 'success')
                 return redirect(url_for('home'))
-            else:
+            elif user['role'] == 'tutor':
                 flash(f'Welcome tutor {user["name"]}!', 'success')
                 return redirect(url_for('tutor_dashboard'))
 
@@ -313,8 +320,11 @@ def tutor_dashboard():
     if not user:
         flash('Vui lòng đăng nhập để tiếp tục.', 'error')
         return redirect(url_for('login'))
-
-    # If later you distinguish roles, you can also check user['role'] == 'tutor' here
+    
+    # Only tutors can access tutor dashboard
+    if user.get('role') != 'tutor':
+        flash('Chỉ giáo viên mới có thể truy cập trang này.', 'error')
+        return redirect(url_for('home'))
 
     return render_template(
         'tutor_dashboard.html',

@@ -1,566 +1,441 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>My Tutors – TutorHub</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% extends "base.html" %}
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+{% block title %}My Tutors – TutorHub{% endblock %}
 
-  <!-- Font Awesome (used inside cards, search, etc.) -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    integrity="sha512-om8w+2Y7DQw1G02Vv2Y8Oj0tJ1mlz5c+vZLH2zyCsk3YQlUK+vkHq3WQ0q5+Y0hwfdrRZDWK31Dyu2a1s0F1g=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
+{% block extra_css %}
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Bootstrap Icons (for NAVBAR right icons) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<!-- Font Awesome (used inside cards, search, etc.) -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  integrity="sha512-om8w+2Y7DQw1G02Vv2Y8Oj0tJ1mlz5c+vZLH2zyCsk3YQlUK+vkHq3WQ0q5+Y0hwfdrRZDWK31Dyu2a1s0F1g=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
 
-  <style>
-    :root {
-      --primary: #007bff;
-      --primary-dark: #0052b3;
-      --bg: #f3f4f6;
-      --text: #111827;
-      --muted: #6b7280;
-      --card-bg: #ffffff;
-      --border: #e5e7eb;
-      --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.06);
-      --radius-lg: 16px;
-      --radius-md: 12px;
-    }
+<style>
+  :root {
+    --primary: #007bff;
+    --primary-dark: #0052b3;
+    --bg: #f3f4f6;
+    --text: #111827;
+    --muted: #6b7280;
+    --card-bg: #ffffff;
+    --border: #e5e7eb;
+    --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.06);
+    --radius-lg: 16px;
+    --radius-md: 12px;
+  }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  body {
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #0f68c7;
+    color: var(--text);
+    line-height: 1.6;
+  }
 
-    body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background-color: #0f68c7;
-      color: var(--text);
-      line-height: 1.6;
-    }
+  /* ===== NAVBAR CUSTOM STYLING ===== */
+  .navbar {
+    background: #ffffff !important;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 10px 0;
+  }
+  .navbar-nav.nav-main-links {
+    gap: 40px;
+  }
+  .navbar-nav .nav-link.nav-link-custom {
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    padding-bottom: 6px;
+    border-bottom: 3px solid transparent;
+    color: #4b5563;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .navbar-nav .nav-link.nav-link-custom:hover {
+    color: #0a6efc;
+  }
+  .navbar-nav .nav-link.nav-link-custom.active {
+    color: #0a6efc;
+    border-bottom-color: #0a6efc;
+    font-weight: 600;
+  }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+  /* ===== REST OF ORIGINAL STYLES ===== */
+  .main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 24px 0 32px;
+    background: #e5f0ff;
+  }
 
-    img {
-      max-width: 100%;
-      display: block;
-    }
+  .page-container {
+    max-width: 1150px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
+    padding: 24px 32px 32px;
+  }
 
-    .app {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
 
-    /* ===== NAVBAR (same style as home) ===== */
-    .navbar-main {
-      background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 10px 0;
-    }
-    .navbar-main .navbar-inner {
-      max-width: 1150px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .navbar-logo {
-      height: 32px;
-      width: auto;
-    }
+  .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+  }
 
-    .nav-center {
-      display: flex;
-      gap: 40px;
-    }
-    .nav-center .nav-link-custom {
-      font-size: 16px;
-      font-weight: 500;
-      text-decoration: none;
-      padding-bottom: 6px;
-      border-bottom: 3px solid transparent;
-      color: #4b5563; /* inactive = gray */
-      transition: color 0.2s ease, border-color 0.2s ease;
-    }
-    .nav-center .nav-link-custom:hover {
-      color: #0a6efc;
-    }
-    .nav-center .nav-link-custom.active {
-      color: #0a6efc;
-      border-bottom-color: #0a6efc; /* blue underline for active tab */
-      font-weight: 600;
-    }
+  .btn-primary {
+    background-color: var(--primary);
+    color: #ffffff;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+    transition: background-color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    text-decoration: none;
+  }
 
-    .nav-right-icons {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .top-icon-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 1px solid #e5e7eb;
-      background-color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      cursor: pointer;
-    }
-    .top-icon-btn i {
-      font-size: 16px;
-      color: #6b7280;
-    }
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.4);
+    color: #ffffff;
+  }
 
-    /* ===== REST OF ORIGINAL STYLES ===== */
+  .search-box {
+    margin-bottom: 24px;
+  }
 
-    .main {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      padding: 24px 0 32px;
-      background: #e5f0ff;
-    }
+  .search-input {
+    width: 100%;
+    max-width: 420px;
+    padding: 9px 12px 9px 34px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    outline: none;
+    color: #111827;
+    background: #f9fafb;
+    position: relative;
+  }
 
-    .page-container {
-      max-width: 1150px;
-      width: 100%;
-      background: #ffffff;
-      border-radius: 24px;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
-      padding: 24px 32px 32px;
-    }
+  .search-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 420px;
+  }
 
-    .page-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-    }
+  .search-wrapper i {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #9ca3af;
+  }
 
-    .page-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: #111827;
-    }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #111827;
+  }
 
-    .btn-primary {
-      background-color: var(--primary);
-      color: #ffffff;
-      padding: 8px 18px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
-      transition: background-color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
-    }
+  .tutor-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 32px;
+  }
 
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 12px 26px rgba(37, 99, 235, 0.4);
-    }
+  .tutor-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    .search-box {
-      margin-bottom: 24px;
-    }
+  .tutor-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-    .search-input {
-      width: 100%;
-      max-width: 420px;
-      padding: 9px 12px 9px 34px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      font-size: 14px;
-      outline: none;
-      color: #111827;
-      background: #f9fafb;
-      position: relative;
-    }
+  .tutor-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
 
-    .search-wrapper {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-      max-width: 420px;
-    }
+  .tutor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-    .search-wrapper i {
-      position: absolute;
-      left: 11px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 14px;
-      color: #9ca3af;
-    }
+  .tutor-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+  }
 
-    .section-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: #111827;
-    }
+  .tutor-subject {
+    font-size: 13px;
+    color: #6b7280;
+  }
 
+  .rating-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #f59e0b;
+    margin-top: 6px;
+  }
+
+  .rating-row span {
+    color: #6b7280;
+  }
+
+  .card-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-top: 6px;
+    margin-bottom: 2px;
+  }
+
+  .card-date-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  .card-date-row i {
+    font-size: 12px;
+  }
+
+  .session-card {
+    width: 260px;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .session-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .badge-status {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid #d1d5db;
+    color: #374151;
+    background: #f9fafb;
+    margin-top: 4px;
+  }
+
+  .btn-secondary {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    font-size: 13px;
+    font-weight: 500;
+    background: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+  }
+
+  .btn-secondary:hover {
+    background: #f3f4f6;
+  }
+
+  @media (max-width: 992px) {
     .tutor-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    .tutor-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-soft);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    .page-container {
+      border-radius: 0;
     }
+  }
 
-    .tutor-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+  @media (max-width: 640px) {
+    .page-container {
+      padding: 20px 16px 24px;
     }
-
-    .tutor-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      overflow: hidden;
-      flex-shrink: 0;
+    .tutor-row {
+      grid-template-columns: 1fr;
     }
+  }
+</style>
+{% endblock %}
 
-    .tutor-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+{% block navbar_center %}
+<ul class="navbar-nav mx-auto nav-main-links">
+  <li class="nav-item">
+    <a class="nav-link nav-link-custom {% if request.endpoint == 'home' %}active{% endif %}" href="{{ url_for('home') }}">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link nav-link-custom {% if request.endpoint == 'my_tutors' %}active{% endif %}" href="{{ url_for('my_tutors') }}">My Tutors</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link nav-link-custom {% if request.endpoint == 'materials' %}active{% endif %}" href="{{ url_for('materials') }}">Resources</a>
+  </li>
+</ul>
+{% endblock %}
 
-    .tutor-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: #111827;
-    }
+{% block content %}
+<div class="app">
+  <!-- Main Content -->
+  <main class="main">
+    <div class="page-container">
 
-    .tutor-subject {
-      font-size: 13px;
-      color: #6b7280;
-    }
+      <!-- Header row -->
+      <div class="page-header">
+        <h1 class="page-title">My Tutors</h1>
 
-    .rating-row {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      color: #f59e0b;
-      margin-top: 6px;
-    }
-
-    .rating-row span {
-      color: #6b7280;
-    }
-
-    .card-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-      margin-top: 6px;
-      margin-bottom: 2px;
-    }
-
-    .card-date-row {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    .card-date-row i {
-      font-size: 12px;
-    }
-
-    .session-card {
-      width: 260px;
-      background: var(--card-bg);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-soft);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .session-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .badge-status {
-      display: inline-flex;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 600;
-      border: 1px solid #d1d5db;
-      color: #374151;
-      background: #f9fafb;
-      margin-top: 4px;
-    }
-
-    .btn-secondary {
-      margin-top: 10px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      font-size: 13px;
-      font-weight: 500;
-      background: #ffffff;
-      cursor: pointer;
-      transition: background-color 0.1s ease;
-    }
-
-    .btn-secondary:hover {
-      background: #f3f4f6;
-    }
-
-    .page-footer {
-      margin-top: 40px;
-      font-size: 11px;
-      color: #9ca3af;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .page-footer-left span {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .made-with-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .made-with-pill i {
-      font-size: 14px;
-    }
-
-    @media (max-width: 992px) {
-      .tutor-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .page-container {
-        border-radius: 0;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .page-container {
-        padding: 20px 16px 24px;
-      }
-      .tutor-row {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-
-    <!-- NAVBAR -->
-    <nav class="navbar-main">
-      <div class="navbar-inner">
-        <!-- Logo -->
-        <a href="{{ url_for('home') }}">
-          <img src="{{ url_for('static', filename='img/hcmut/logo.png') }}"
-               alt="TutorHub Logo"
-               class="navbar-logo">
+        <!-- Find a new Tutor -> request.html -->
+        <a href="{{ url_for('find_tutor') }}" class="btn-primary">
+          Find a new Tutor
         </a>
+      </div>
 
-        <!-- Center navigation -->
-        <div class="nav-center">
-          <a href="{{ url_for('home') }}" class="nav-link-custom">
-            Dashboard
-          </a>
-          <a href="{{ url_for('my_tutors') }}" class="nav-link-custom active">
-            My Tutors
-          </a>
-          <a href="#" class="nav-link-custom">
-            Resources
-          </a>
-        </div>
-
-        <!-- Right icons -->
-        <div class="nav-right-icons">
-          <button type="button" class="top-icon-btn">
-            <i class="bi bi-bell"></i>
-          </button>
-          <button type="button" class="top-icon-btn">
-            <i class="bi bi-chat-dots"></i>
-          </button>
-          <button type="button" class="top-icon-btn">
-            <i class="bi bi-person"></i>
-          </button>
+      <!-- Search -->
+      <div class="search-box">
+        <div class="search-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" class="search-input" placeholder="Search" />
         </div>
       </div>
-    </nav>
 
-    <!-- Main Content -->
-    <main class="main">
-      <div class="page-container">
+      <!-- Semester section -->
+      <h2 class="section-title">Semester 1/2025-2026</h2>
 
-        <!-- Header row -->
-        <div class="page-header">
-          <h1 class="page-title">My Tutors</h1>
-
-          <!-- Find a new Tutor -> request.html -->
-          <a href="{{ url_for('find_tutor') }}" class="btn-primary">
-            Find a new Tutor
-          </a>
-        </div>
-
-        <!-- Search -->
-        <div class="search-box">
-          <div class="search-wrapper">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" class="search-input" placeholder="Search" />
-          </div>
-        </div>
-
-        <!-- Semester section -->
-        <h2 class="section-title">Semester 1/2025-2026</h2>
-
-        <div class="tutor-row">
-          <!-- Tutor 1: Nguyen Hoai Nam – Calculus 1 (Selection.png) -->
-          <div class="tutor-card">
-            <div class="tutor-header">
-              <div class="tutor-avatar">
-                <img src="{{ url_for('static', filename='img/hcmut/tutor_avatar/Selection.png') }}"
-                     alt="Nguyen Hoai Nam" />
-              </div>
-              <div>
-                <div class="tutor-name">Nguyen Hoai Nam</div>
-                <div class="tutor-subject">Calculus 1</div>
-                <div class="rating-row">
-                  <i class="fa-solid fa-star"></i>
-                  <span>4.8 Average Rating</span>
-                </div>
-              </div>
+      <div class="tutor-row">
+        <!-- Tutor 1: Nguyen Hoai Nam – Calculus 1 (Selection.png) -->
+        <div class="tutor-card">
+          <div class="tutor-header">
+            <div class="tutor-avatar">
+              <img src="{{ url_for('static', filename='img/hcmut/tutor_avatar/Selection.png') }}"
+                   alt="Nguyen Hoai Nam" />
             </div>
-
-            <div class="card-label">Upcoming Sessions</div>
-            <div class="card-date-row">
-              <i class="fa-regular fa-calendar"></i>
-              <span>August 15, 2024 at 10:00 AM</span>
+            <div>
+              <div class="tutor-name">Nguyen Hoai Nam</div>
+              <div class="tutor-subject">Calculus 1</div>
+              <div class="rating-row">
+                <i class="fa-solid fa-star"></i>
+                <span>4.8 Average Rating</span>
+              </div>
             </div>
           </div>
 
-          <!-- Tutor 2: Nguyen Hoai Nam – Probability and Statistics (Selection.png) -->
-          <div class="tutor-card">
-            <div class="tutor-header">
-              <div class="tutor-avatar">
-                <img src="{{ url_for('static', filename='img/hcmut/tutor_avatar/Selection.png') }}"
-                     alt="Nguyen Hoai Nam" />
-              </div>
-              <div>
-                <div class="tutor-name">Nguyen Hoai Nam</div>
-                <div class="tutor-subject">Probability and Statistics</div>
-                <div class="rating-row">
-                  <i class="fa-solid fa-star"></i>
-                  <span>4.8 Average Rating</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-label">Upcoming Sessions</div>
-            <div class="card-date-row">
-              <i class="fa-regular fa-calendar"></i>
-              <span>August 16, 2024 at 2:00 PM</span>
-            </div>
-          </div>
-
-          <!-- Tutor 3: Nguyen An Khuong – Selection (1).png -->
-          <div class="tutor-card">
-            <div class="tutor-header">
-              <div class="tutor-avatar">
-                <img src="{{ url_for('static', filename='img/hcmut/tutor_avatar/Selection (1).png') }}"
-                     alt="Nguyen An Khuong" />
-              </div>
-              <div>
-                <div class="tutor-name">Nguyen An Khuong</div>
-                <div class="tutor-subject">Mathematical Modeling (CO2011)</div>
-                <div class="rating-row">
-                  <i class="fa-solid fa-star"></i>
-                  <span>4.8 Average Rating</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-label">Upcoming Sessions</div>
-            <div class="card-date-row">
-              <i class="fa-regular fa-calendar"></i>
-              <span>August 12, 2025 at 3:00 PM</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- All Sessions Upcoming -->
-        <h2 class="section-title">All Sessions Upcoming</h2>
-
-        <div class="session-card">
-          <div class="session-title">Derivatives</div>
+          <div class="card-label">Upcoming Sessions</div>
           <div class="card-date-row">
             <i class="fa-regular fa-calendar"></i>
-            <span>August 20, 2025 at 10:00 AM</span>
-          </div>
-          <span class="badge-status">Upcoming</span>
-          <button class="btn-secondary">View Details</button>
-        </div>
-
-        <!-- Small footer -->
-        <div class="page-footer">
-          <div class="page-footer-left">
-            <span>© 2025 TutorHub – HCMUT</span>
-          </div>
-          <div class="page-footer-right">
-            <span class="made-with-pill">
-              Made with <i class="fa-solid fa-heart"></i>
-            </span>
+            <span>August 15, 2024 at 10:00 AM</span>
           </div>
         </div>
 
+        <!-- Tutor 2: Nguyen Hoai Nam – Probability and Statistics (Selection.png) -->
+        <div class="tutor-card">
+          <div class="tutor-header">
+            <div class="tutor-avatar">
+              <img src="{{ url_for('static', filename='img/hcmut/tutor_avatar/Selection.png') }}"
+                   alt="Nguyen Hoai Nam" />
+            </div>
+            <div>
+              <div class="tutor-name">Nguyen Hoai Nam</div>
+              <div class="tutor-subject">Probability and Statistics</div>
+              <div class="rating-row">
+                <i class="fa-solid fa-star"></i>
+                <span>4.8 Average Rating</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-label">Upcoming Sessions</div>
+          <div class="card-date-row">
+            <i class="fa-regular fa-calendar"></i>
+            <span>August 16, 2024 at 2:00 PM</span>
+          </div>
+        </div>
+
+        <!-- Tutor 3: Nguyen An Khuong – Selection (1).png -->
+        <div class="tutor-card">
+          <div class="tutor-header">
+            <div class="tutor-avatar">
+              <img src="{{ url_for('static', filename='img/hcmut/tutor_avatar/Selection (1).png') }}"
+                   alt="Nguyen An Khuong" />
+            </div>
+            <div>
+              <div class="tutor-name">Nguyen An Khuong</div>
+              <div class="tutor-subject">Mathematical Modeling (CO2011)</div>
+              <div class="rating-row">
+                <i class="fa-solid fa-star"></i>
+                <span>4.8 Average Rating</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-label">Upcoming Sessions</div>
+          <div class="card-date-row">
+            <i class="fa-regular fa-calendar"></i>
+            <span>August 12, 2025 at 3:00 PM</span>
+          </div>
+        </div>
       </div>
-    </main>
 
-  </div>
-</body>
-</html>
+      <!-- All Sessions Upcoming -->
+      <h2 class="section-title">All Sessions Upcoming</h2>
+
+      <div class="session-card">
+        <div class="session-title">Derivatives</div>
+        <div class="card-date-row">
+          <i class="fa-regular fa-calendar"></i>
+          <span>August 20, 2025 at 10:00 AM</span>
+        </div>
+        <span class="badge-status">Upcoming</span>
+        <button class="btn-secondary">View Details</button>
+      </div>
+
+    </div>
+  </main>
+</div>
+{% endblock %}

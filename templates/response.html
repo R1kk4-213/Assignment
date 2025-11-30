@@ -122,6 +122,34 @@
     }
 
     .nav-avatar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    
+    .nav-avatar img {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 2px solid #e5e7eb;
+      object-fit: cover;
+    }
+    
+    .nav-avatar .avatar-name {
+      font-size: 14px;
+      color: #1e293b;
+      font-weight: 500;
+      display: none;
+    }
+    
+    @media (min-width: 768px) {
+      .nav-avatar .avatar-name {
+        display: inline;
+      }
+    }
+    
+    .nav-avatar i {
       width: 32px;
       height: 32px;
       border-radius: 999px;
@@ -130,7 +158,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
       color: #4b5563;
       font-size: 16px;
     }
@@ -415,7 +442,12 @@
             <i class="bi bi-chat-dots"></i>
           </button>
           <div class="nav-avatar">
+            {% if session.user %}
+            <img src="{{ url_for('static', filename='img/asset/avatar.png') }}" alt="{{ session.user.name }}">
+            <span class="avatar-name">{{ session.user.name }}</span>
+            {% else %}
             <i class="bi bi-person"></i>
+            {% endif %}
           </div>
         </div>
       </div>

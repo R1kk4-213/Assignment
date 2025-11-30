@@ -1,466 +1,414 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TutorHub Home</title>
+{% extends "base.html" %}
 
-    <!-- Bootstrap + Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+{% block title %}TutorHub Home{% endblock %}
 
-    <style>
-        /* ===== NAVBAR ===== */
-        .navbar-main {
-            background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 10px 0;
-        }
-        .navbar-main .navbar-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .navbar-logo {
-            height: 32px;
-            width: auto;
-        }
-        .nav-center {
-            display: flex;
-            gap: 40px;
-        }
-        .nav-center .nav-link-custom {
-            font-size: 16px;
-            font-weight: 500;
-            color: #0a6efc;
-            text-decoration: none;
-            padding-bottom: 6px;
-            transition: color 0.2s ease;
-            border-bottom: 3px solid transparent;
-        }
-        .nav-center .nav-link-custom:hover {
-            color: #0056c7;
-        }
-        .nav-center .nav-link-custom.active {
-            border-bottom-color: #0a6efc;
-            font-weight: 600;
-        }
+{% block extra_css %}
+<style>
+    /* ===== NAVBAR CUSTOM STYLING ===== */
+    .navbar {
+        background: #ffffff !important;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 10px 0;
+    }
+    .navbar .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .navbar-nav.nav-main-links {
+        gap: 40px;
+    }
+    .navbar-nav .nav-link.nav-link-custom {
+        font-size: 16px;
+        font-weight: 500;
+        color: #0a6efc;
+        text-decoration: none;
+        padding-bottom: 6px;
+        transition: color 0.2s ease;
+        border-bottom: 3px solid transparent;
+    }
+    .navbar-nav .nav-link.nav-link-custom:hover {
+        color: #0056c7;
+    }
+    .navbar-nav .nav-link.nav-link-custom.active {
+        border-bottom-color: #0a6efc;
+        font-weight: 600;
+    }
 
-        .nav-right-icons {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .top-icon-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1px solid #e5e7eb;
-            background-color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            cursor: pointer;
-        }
-        .top-icon-btn i {
-            font-size: 16px;
-            color: #6b7280;
-        }
+    /* ===== HERO ===== */
+    .home-hero {
+        background: linear-gradient(135deg, #0a6efc 0%, #2fa6ff 100%);
+        color: #fff;
+        padding: 60px 0;
+    }
+    .hero-card {
+        background: rgba(255,255,255,0.15);
+        border-radius: 20px;
+        padding: 40px;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+    .hero-image {
+        border-radius: 18px;
+        box-shadow: 0 20px 45px rgba(0,0,0,0.2);
+    }
 
-        /* ===== HERO ===== */
-        .home-hero {
-            background: linear-gradient(135deg, #0a6efc 0%, #2fa6ff 100%);
-            color: #fff;
-            padding: 60px 0;
-        }
-        .hero-card {
-            background: rgba(255,255,255,0.15);
-            border-radius: 20px;
-            padding: 40px;
-            backdrop-filter: blur(4px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        }
-        .hero-image {
-            border-radius: 18px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.2);
-        }
+    .section-title {
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
 
-        .section-title {
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
+    /* ===== FEATURES ===== */
+    .feature-card {
+        border-radius: 18px;
+        padding: 24px;
+        height: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background-color: #fff;
+    }
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 45px rgba(0,0,0,0.08);
+    }
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(10, 110, 252, 0.1);
+        color: #0a6efc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
 
-        /* ===== FEATURES ===== */
-        .feature-card {
-            border-radius: 18px;
-            padding: 24px;
-            height: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            background-color: #fff;
-        }
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 45px rgba(0,0,0,0.08);
-        }
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(10, 110, 252, 0.1);
-            color: #0a6efc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 16px;
-        }
+    /* ===== BENEFITS ===== */
+    .benefits-list li {
+        margin-bottom: 12px;
+        padding-left: 32px;
+        position: relative;
+    }
+    .benefits-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: #0a6efc;
+        font-weight: 700;
+    }
 
-        /* ===== BENEFITS ===== */
-        .benefits-list li {
-            margin-bottom: 12px;
-            padding-left: 32px;
-            position: relative;
-        }
-        .benefits-list li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            top: 0;
-            color: #0a6efc;
-            font-weight: 700;
-        }
+    /* ===== GALLERY (8 pics) ===== */
+    .gallery-card {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        background: #fff;
+    }
+    .gallery-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
 
-        /* ===== GALLERY (8 pics) ===== */
-        .gallery-card {
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-            background: #fff;
-        }
-        .gallery-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
+    /* ===== PROGRAM DETAIL MODAL ===== */
+    .program-modal .modal-content {
+        border-radius: 18px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 18px 50px rgba(15,23,42,0.25);
+    }
+    .program-modal .modal-header {
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .program-modal .modal-title {
+        font-weight: 700;
+    }
+    .program-modal .modal-body h5 {
+        font-weight: 700;
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+    .program-modal .modal-body h6 {
+        font-weight: 600;
+        margin-top: 0.75rem;
+        margin-bottom: 0.25rem;
+    }
+    .program-modal .modal-body p,
+    .program-modal .modal-body li {
+        font-size: 0.95rem;
+    }
+    .program-modal ul {
+        padding-left: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
 
-        /* ===== PROGRAM DETAIL MODAL ===== */
-        .program-modal .modal-content {
-            border-radius: 18px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 18px 50px rgba(15,23,42,0.25);
-        }
-        .program-modal .modal-header {
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .program-modal .modal-title {
-            font-weight: 700;
-        }
-        .program-modal .modal-body h5 {
-            font-weight: 700;
-            margin-top: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-        .program-modal .modal-body h6 {
-            font-weight: 600;
-            margin-top: 0.75rem;
-            margin-bottom: 0.25rem;
-        }
-        .program-modal .modal-body p,
-        .program-modal .modal-body li {
-            font-size: 0.95rem;
-        }
-        .program-modal ul {
-            padding-left: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-    </style>
-</head>
-<body>
+{% block navbar_center %}
+<ul class="navbar-nav mx-auto nav-main-links">
+    <li class="nav-item">
+        <a class="nav-link nav-link-custom {% if request.endpoint == 'home' %}active{% endif %}" href="{{ url_for('home') }}">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link nav-link-custom {% if request.endpoint == 'my_tutors' %}active{% endif %}" href="{{ url_for('my_tutors') }}">My Tutors</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link nav-link-custom {% if request.endpoint == 'materials' %}active{% endif %}" href="{{ url_for('materials') }}">Resources</a>
+    </li>
+</ul>
+{% endblock %}
 
-    <!-- NAVBAR -->
-    <nav class="navbar-main">
-        <div class="container navbar-inner">
-            <a href="{{ url_for('home') }}" class="d-flex align-items-center">
-                <img src="{{ url_for('static', filename='img/hcmut/logo.png') }}"
-                     alt="TutorHub Logo"
-                     class="navbar-logo">
-            </a>
-
-            <div class="nav-center">
-                <a href="{{ url_for('home') }}" class="nav-link-custom active">Home</a>
-                <a href="{{ url_for('my_tutors') }}" class="nav-link-custom">My Tutors</a>
-                <a href="#" class="nav-link-custom">Resources</a>
-            </div>
-
-            <div class="nav-right-icons">
-                <button type="button" class="top-icon-btn">
-                    <i class="bi bi-bell"></i>
-                </button>
-                <button type="button" class="top-icon-btn">
-                    <i class="bi bi-chat-dots"></i>
-                </button>
-                <button type="button" class="top-icon-btn">
-                    <i class="bi bi-person"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- HERO -->
-    <section class="home-hero">
-        <div class="container">
-            <div class="row align-items-center g-4">
-                <div class="col-lg-6">
-                    <div class="hero-card">
-                        <p class="text-uppercase small mb-2 opacity-75">Tutor Support Program</p>
-                        <h1 class="display-6 fw-bold mb-3">Tutor Support Program at HCMUT</h1>
-                        <p class="lead mb-4">
-                            Connecting tutors, students, and administrators through a single intelligent platform
-                            designed specifically for the HCMUT community.
-                        </p>
-                        <div class="d-flex gap-3 flex-wrap">
-                            <a href="{{ url_for('find_tutor') }}" class="btn btn-light btn-lg px-4">Enroll Now</a>
-
-                            <!-- Program Detail opens modal -->
-                            <button type="button"
-                                    class="btn btn-outline-light btn-lg px-4"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#programDetailModal">
-                                Program Detail
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 text-center">
-                    <img src="{{ url_for('static', filename='img/hcmut/campus.png') }}"
-                         alt="HCMUT campus"
-                         class="img-fluid hero-image">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- OVERVIEW -->
-    <section class="py-5 bg-white">
-        <div class="container">
-            <h2 class="section-title text-center">Program Overview</h2>
-            <p class="lead text-muted text-center mx-auto" style="max-width: 900px;">
-                The Tutor Support Program streamlines how we connect faculty, graduate tutors, and undergraduates.
-                The platform supports tutor-student matching, session scheduling, progress tracking, and feedback
-                collection, enabling the university to make informed decisions and deliver personalized support at scale.
-            </p>
-        </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="section-title text-center mb-5">Key Program Features</h2>
-            <div class="row g-4">
-                {% for feature in features %}
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="bi {{ feature.icon }}"></i>
-                        </div>
-                        <h5>{{ feature.title }}</h5>
-                        <p class="text-muted mb-0">{{ feature.description }}</p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-
-    <!-- BENEFITS -->
-    <section class="py-5 bg-white">
-        <div class="container">
-            <h2 class="section-title text-center mb-4">Program Benefits</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <ul class="benefits-list list-unstyled fs-5 text-muted">
-                        {% for benefit in benefits %}
-                        <li>{{ benefit }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PROGRAM IN ACTION – 8 pictures -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="section-title text-center mb-4">Program in Action</h2>
-            <div class="row g-4">
-                <!-- 8 fixed images; put your real files here -->
-                <div class="col-md-3 col-sm-6">
-                    <div class="gallery-card">
-                        <img src="{{ url_for('static', filename='img/hcmut/program/program1.png') }}"
-                             alt="Campus view 1">
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="gallery-card">
-                        <img src="{{ url_for('static', filename='img/hcmut/program/program2.png') }}"
-                             alt="Campus view 2">
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="gallery-card">
-                        <img src="{{ url_for('static', filename='img/hcmut/program/program3.png') }}"
-                             alt="Classroom activities">
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="gallery-card">
-                        <img src="{{ url_for('static', filename='img/hcmut/program/program4.png') }}"
-                             alt="Graduation moment">
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="gallery-card">
-                        <img src="{{ url_for('static', filename='img/hcmut/program/program5.png') }}"
-                             alt="Students studying outdoors">
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="gallery-card">
-                        <img src="{{ url_for('static', filename='img/hcmut/program/program6.png') }}"
-                             alt="Group discussion">
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="gallery-card">
-                        <img src="{{ url_for('static', filename='img/hcmut/program/program7.png') }}"
-                             alt="Signing ceremony">
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="gallery-card">
-                        <img src="{{ url_for('static', filename='img/hcmut/program/program8.png') }}"
-                             alt="Students working with laptop">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PROGRAM DETAIL MODAL (OVERLAY) -->
-    <div class="modal fade" id="programDetailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable program-modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tutor Support Program at HCMUT</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <p class="mb-3">
-                        A structured academic mentoring program connecting HCMUT students with qualified tutors.
+{% block content %}
+<!-- HERO -->
+<section class="home-hero">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <div class="hero-card">
+                    <p class="text-uppercase small mb-2 opacity-75">Tutor Support Program</p>
+                    <h1 class="display-6 fw-bold mb-3">Tutor Support Program at HCMUT</h1>
+                    <p class="lead mb-4">
+                        Connecting tutors, students, and administrators through a single intelligent platform
+                        designed specifically for the HCMUT community.
                     </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="{{ url_for('find_tutor') }}" class="btn btn-light btn-lg px-4">Enroll Now</a>
 
-                    <h5>Overview</h5>
-                    <p>
-                        The Tutor Support Program helps students overcome learning challenges, improve academic
-                        performance, and build confidence in key courses through targeted one-on-one and small-group mentoring.
-                        The program connects students, tutors, academic departments, and university offices via a centralized
-                        online platform that handles registration, matching, scheduling, session tracking, and reporting.
-                    </p>
-
-                    <h5>Program Objectives</h5>
-                    <ul>
-                        <li><strong>Academic improvement for students:</strong> better exam preparation, clearer study plans, and stronger fundamentals.</li>
-                        <li><strong>Professional growth for tutors:</strong> practice communication, teaching, and leadership with recognized mentoring experience.</li>
-                        <li><strong>Transparency and data for the university:</strong> usage analytics, engagement reports, and insights for scholarships, quality assurance, and program evaluation.</li>
-                    </ul>
-
-                    <h5>Who Can Join</h5>
-                    <ul>
-                        <li><strong>Students (Mentees):</strong> any HCMUT student can search and filter tutor profiles, request mentoring, book sessions, and track their learning progress.</li>
-                        <li><strong>Tutors (Mentors):</strong> faculty members, graduate students, and high-performing senior students approved by departments.</li>
-                        <li><strong>Program Coordinators &amp; Departments:</strong> approve tutor applicants, monitor session quality, and use reports to guide improvements.</li>
-                    </ul>
-
-                    <h5>How the Program Works</h5>
-                    <ol>
-                        <li>Students sign in with their HCMUT SSO account and complete a short profile.</li>
-                        <li>They browse available tutors, filter by course, topic, language, and availability, then submit a tutoring request.</li>
-                        <li>Tutors review and accept requests, then agree on a schedule (online or on campus).</li>
-                        <li>After each session, both tutor and student record quick feedback; the system aggregates data for progress tracking and reporting.</li>
-                    </ol>
-
-                    <h5>Key System Features</h5>
-
-                    <h6>1. Unified Login &amp; Data Sync</h6>
-                    <ul>
-                        <li>Accounts linked with the university’s DATACORE / student information system.</li>
-                        <li>Automatic import of course enrollment, helping recommend relevant tutors.</li>
-                    </ul>
-
-                    <h6>2. Smart Matching &amp; Scheduling</h6>
-                    <ul>
-                        <li>AI-based suggestions recommend suitable tutors to each student.</li>
-                        <li>Conflict-aware calendar with color-coded time slots.</li>
-                    </ul>
-
-                    <h6>3. Professional Session Management</h6>
-                    <ul>
-                        <li>Structured agendas and session notes.</li>
-                        <li>Attendance tracking and learning goals per topic.</li>
-                        <li>Downloadable session logs for scholarship or portfolio evidence.</li>
-                    </ul>
-
-                    <h6>4. Feedback &amp; Reporting</h6>
-                    <ul>
-                        <li>Real-time dashboards for courses, semesters, and departments.</li>
-                        <li>Trend lines showing improvement and high-risk topics.</li>
-                        <li>Exportable summary reports for accreditation and quality assurance.</li>
-                    </ul>
-
-                    <h5>Benefits</h5>
-                    <h6>For Students</h6>
-                    <ul>
-                        <li>Personalized academic support and better preparation for exams.</li>
-                        <li>Higher GPA potential and reduced stress.</li>
-                        <li>Clearer study plans and improved confidence.</li>
-                    </ul>
-
-                    <h6>For Tutors</h6>
-                    <ul>
-                        <li>Teaching experience recognized by HCMUT.</li>
-                        <li>Opportunities to develop communication, mentoring, and leadership skills.</li>
-                        <li>Stronger CV for jobs or graduate studies.</li>
-                    </ul>
-
-                    <h6>For the University</h6>
-                    <ul>
-                        <li>Centralized overview of tutoring activities across faculties.</li>
-                        <li>Data-driven decisions on course support and curriculum design.</li>
-                        <li>Improved student success and retention.</li>
-                    </ul>
-
-                    <h5>Vision for the Future</h5>
-                    <p>
-                        The Tutor Support Program is designed as the foundation of a modern academic support ecosystem
-                        at HCMUT. Future extensions include integration with LMS platforms, learning analytics dashboards,
-                        and additional mentoring services such as career advising and soft-skills training.
-                    </p>
+                        <!-- Program Detail opens modal -->
+                        <button type="button"
+                                class="btn btn-outline-light btn-lg px-4"
+                                data-bs-toggle="modal"
+                                data-bs-target="#programDetailModal">
+                            Program Detail
+                        </button>
+                    </div>
                 </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="{{ url_for('static', filename='img/hcmut/campus.png') }}"
+                     alt="HCMUT campus"
+                     class="img-fluid hero-image">
+            </div>
+        </div>
+    </div>
+</section>
 
-                <div class="modal-footer d-flex justify-content-between">
-                    <small class="text-muted">Sign in with your HCMUT SSO account to join as a student or register as a tutor.</small>
-                    <a href="{{ url_for('find_tutor') }}" class="btn btn-primary">
-                        Sign in
-                    </a>
+<!-- OVERVIEW -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="section-title text-center">Program Overview</h2>
+        <p class="lead text-muted text-center mx-auto" style="max-width: 900px;">
+            The Tutor Support Program streamlines how we connect faculty, graduate tutors, and undergraduates.
+            The platform supports tutor-student matching, session scheduling, progress tracking, and feedback
+            collection, enabling the university to make informed decisions and deliver personalized support at scale.
+        </p>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Key Program Features</h2>
+        <div class="row g-4">
+            {% for feature in features %}
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi {{ feature.icon }}"></i>
+                    </div>
+                    <h5>{{ feature.title }}</h5>
+                    <p class="text-muted mb-0">{{ feature.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">Program Benefits</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <ul class="benefits-list list-unstyled fs-5 text-muted">
+                    {% for benefit in benefits %}
+                    <li>{{ benefit }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROGRAM IN ACTION – 8 pictures -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">Program in Action</h2>
+        <div class="row g-4">
+            <!-- 8 fixed images; put your real files here -->
+            <div class="col-md-3 col-sm-6">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename='img/hcmut/program/program1.png') }}"
+                         alt="Campus view 1">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename='img/hcmut/program/program2.png') }}"
+                         alt="Campus view 2">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename='img/hcmut/program/program3.png') }}"
+                         alt="Classroom activities">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename='img/hcmut/program/program4.png') }}"
+                         alt="Graduation moment">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename='img/hcmut/program/program5.png') }}"
+                         alt="Students studying outdoors">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename='img/hcmut/program/program6.png') }}"
+                         alt="Group discussion">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename='img/hcmut/program/program7.png') }}"
+                         alt="Signing ceremony">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="gallery-card">
+                    <img src="{{ url_for('static', filename='img/hcmut/program/program8.png') }}"
+                         alt="Students working with laptop">
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Bootstrap JS (needed for modal) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<!-- PROGRAM DETAIL MODAL (OVERLAY) -->
+<div class="modal fade" id="programDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable program-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tutor Support Program at HCMUT</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-3">
+                    A structured academic mentoring program connecting HCMUT students with qualified tutors.
+                </p>
+
+                <h5>Overview</h5>
+                <p>
+                    The Tutor Support Program helps students overcome learning challenges, improve academic
+                    performance, and build confidence in key courses through targeted one-on-one and small-group mentoring.
+                    The program connects students, tutors, academic departments, and university offices via a centralized
+                    online platform that handles registration, matching, scheduling, session tracking, and reporting.
+                </p>
+
+                <h5>Program Objectives</h5>
+                <ul>
+                    <li><strong>Academic improvement for students:</strong> better exam preparation, clearer study plans, and stronger fundamentals.</li>
+                    <li><strong>Professional growth for tutors:</strong> practice communication, teaching, and leadership with recognized mentoring experience.</li>
+                    <li><strong>Transparency and data for the university:</strong> usage analytics, engagement reports, and insights for scholarships, quality assurance, and program evaluation.</li>
+                </ul>
+
+                <h5>Who Can Join</h5>
+                <ul>
+                    <li><strong>Students (Mentees):</strong> any HCMUT student can search and filter tutor profiles, request mentoring, book sessions, and track their learning progress.</li>
+                    <li><strong>Tutors (Mentors):</strong> faculty members, graduate students, and high-performing senior students approved by departments.</li>
+                    <li><strong>Program Coordinators &amp; Departments:</strong> approve tutor applicants, monitor session quality, and use reports to guide improvements.</li>
+                </ul>
+
+                <h5>How the Program Works</h5>
+                <ol>
+                    <li>Students sign in with their HCMUT SSO account and complete a short profile.</li>
+                    <li>They browse available tutors, filter by course, topic, language, and availability, then submit a tutoring request.</li>
+                    <li>Tutors review and accept requests, then agree on a schedule (online or on campus).</li>
+                    <li>After each session, both tutor and student record quick feedback; the system aggregates data for progress tracking and reporting.</li>
+                </ol>
+
+                <h5>Key System Features</h5>
+
+                <h6>1. Unified Login &amp; Data Sync</h6>
+                <ul>
+                    <li>Accounts linked with the university's DATACORE / student information system.</li>
+                    <li>Automatic import of course enrollment, helping recommend relevant tutors.</li>
+                </ul>
+
+                <h6>2. Smart Matching &amp; Scheduling</h6>
+                <ul>
+                    <li>AI-based suggestions recommend suitable tutors to each student.</li>
+                    <li>Conflict-aware calendar with color-coded time slots.</li>
+                </ul>
+
+                <h6>3. Professional Session Management</h6>
+                <ul>
+                    <li>Structured agendas and session notes.</li>
+                    <li>Attendance tracking and learning goals per topic.</li>
+                    <li>Downloadable session logs for scholarship or portfolio evidence.</li>
+                </ul>
+
+                <h6>4. Feedback &amp; Reporting</h6>
+                <ul>
+                    <li>Real-time dashboards for courses, semesters, and departments.</li>
+                    <li>Trend lines showing improvement and high-risk topics.</li>
+                    <li>Exportable summary reports for accreditation and quality assurance.</li>
+                </ul>
+
+                <h5>Benefits</h5>
+                <h6>For Students</h6>
+                <ul>
+                    <li>Personalized academic support and better preparation for exams.</li>
+                    <li>Higher GPA potential and reduced stress.</li>
+                    <li>Clearer study plans and improved confidence.</li>
+                </ul>
+
+                <h6>For Tutors</h6>
+                <ul>
+                    <li>Teaching experience recognized by HCMUT.</li>
+                    <li>Opportunities to develop communication, mentoring, and leadership skills.</li>
+                    <li>Stronger CV for jobs or graduate studies.</li>
+                </ul>
+
+                <h6>For the University</h6>
+                <ul>
+                    <li>Centralized overview of tutoring activities across faculties.</li>
+                    <li>Data-driven decisions on course support and curriculum design.</li>
+                    <li>Improved student success and retention.</li>
+                </ul>
+
+                <h5>Vision for the Future</h5>
+                <p>
+                    The Tutor Support Program is designed as the foundation of a modern academic support ecosystem
+                    at HCMUT. Future extensions include integration with LMS platforms, learning analytics dashboards,
+                    and additional mentoring services such as career advising and soft-skills training.
+                </p>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-between">
+                <small class="text-muted">Sign in with your HCMUT SSO account to join as a student or register as a tutor.</small>
+                <a href="{{ url_for('find_tutor') }}" class="btn btn-primary">
+                    Sign in
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

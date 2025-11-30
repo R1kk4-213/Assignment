@@ -22,35 +22,95 @@
                 
                 {% block navbar_center %}
                 <ul class="navbar-nav mx-auto nav-main-links">
+                    {% if not session.user %}
+                    {# Landing/Public Navigation #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') if session.user else url_for('index') }}">
+                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
                             <i class="bi bi-house-door"></i> Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link {% if request.endpoint == 'index' and '#about-us' in request.url %}active{% endif %}" href="{{ url_for('index') }}#about-us">
+                            <i class="bi bi-envelope"></i> Contact
+                        </a>
+                    </li>
+                    {% elif session.user.role == 'student' %}
+                    {# Student Navigation #}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" href="{{ url_for('home') }}">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'find_tutor' %}active{% endif %}" href="{{ url_for('find_tutor') }}">
+                            <i class="bi bi-search"></i> Find Tutor
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'my_tutors' %}active{% endif %}" href="{{ url_for('my_tutors') }}">
                             <i class="bi bi-mortarboard"></i> My Tutors
                         </a>
                     </li>
-                    {% if session.user %}
-                    {% if session.user.role == 'tutor' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('edit_session') }}">
-                            <i class="bi bi-calendar-week"></i> Manage Session
-                        </a>
-                    </li>
-                    {% endif %}
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('materials') }}">
+                        <a class="nav-link {% if request.endpoint == 'materials' %}active{% endif %}" href="{{ url_for('materials') }}">
                             <i class="bi bi-journal-text"></i> Resources
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}#about-us">
-                            <i class="bi bi-envelope"></i> Contact
+                        <a class="nav-link {% if request.endpoint == 'submit_feedback' %}active{% endif %}" href="{{ url_for('submit_feedback') }}">
+                            <i class="bi bi-chat-left-text"></i> Feedback
                         </a>
                     </li>
+                    {% elif session.user.role == 'tutor' %}
+                    {# Tutor Navigation #}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint in ['tutor_dashboard', 'tutor_home'] %}active{% endif %}" href="{{ url_for('tutor_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'edit_session' %}active{% endif %}" href="{{ url_for('edit_session') }}">
+                            <i class="bi bi-calendar-week"></i> Session Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'feedback_list' %}active{% endif %}" href="{{ url_for('feedback_list') }}">
+                            <i class="bi bi-chat-left-text"></i> Feedback
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'materials' %}active{% endif %}" href="{{ url_for('materials') }}">
+                            <i class="bi bi-journal-text"></i> Resources
+                        </a>
+                    </li>
+                    {% elif session.user.role == 'admin' %}
+                    {# Admin Navigation #}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'tutor_management' %}active{% endif %}" href="{{ url_for('tutor_management') }}">
+                            <i class="bi bi-people"></i> Tutor Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'configuration' %}active{% endif %}" href="{{ url_for('configuration') }}">
+                            <i class="bi bi-gear"></i> Configuration
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'reports' %}active{% endif %}" href="{{ url_for('reports') }}">
+                            <i class="bi bi-graph-up"></i> Reports
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
                 {% endblock %}
                 <div class="d-flex align-items-center gap-4 nav-actions">
@@ -63,9 +123,20 @@
                             <i class="bi bi-chat-dots"></i>
                         </a>
                     </div>
-                    <a href="{{ url_for('view_profile') }}" class="nav-avatar-link d-flex align-items-center gap-2">
-                        <img src="{{ url_for('static', filename='img/asset/avatar.png') }}" alt="{{ session.user.name }}" class="nav-avatar">
-                        <i class="bi bi-caret-down-fill"></i>
+                    <div class="dropdown">
+                        <a href="#" class="nav-avatar-link d-flex align-items-center gap-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ url_for('static', filename='img/asset/avatar.png') }}" alt="{{ session.user.name }}" class="nav-avatar">
+                            <span class="d-none d-md-inline">{{ session.user.name }}</span>
+                            <i class="bi bi-caret-down-fill"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('view_profile') }}"><i class="bi bi-person me-2"></i> View Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                    <a class="btn btn-outline-primary nav-profile-btn" href="{{ url_for('logout') }}">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Log out
                     </a>
                     {% else %}
                     <a class="btn btn-outline-primary nav-profile-btn" href="{{ url_for('login') }}">

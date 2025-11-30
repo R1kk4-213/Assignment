@@ -29,6 +29,11 @@ body {
     color: var(--primary-blue);
 }
 
+.nav-main-links .nav-link.active {
+    color: var(--primary-blue);
+    font-weight: 700;
+}
+
 .nav-main-links .bi {
     font-size: 1rem;
 }
