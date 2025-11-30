@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard – TutorHub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome (for icons inside cards, etc.) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    integrity="sha512-om8w+2Y7DQw1G02Vv2Y8Oj0tJ1mlz5c+vZLH2zyCsk3YQlUK+vkHq3WQ0q5+Y0hwfdrRZDWK31Dyu2a1s0F1g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <!-- Bootstrap Icons (for navbar right icons & avatar placeholders) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --primary: #0f68c7;
+      --primary-dark: #0052b3;
+      --page-bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --shadow-soft: 0 16px 40px rgba(15, 23, 42, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: #020617;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    img { max-width: 100%; display: block; }
+
+    .app { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ===== NAVBAR ===== */
+    .navbar-main { background: #ffffff; border-bottom: 1px solid #e5e7eb; }
+
+    .navbar-inner {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 8px; }
+
+    .brand-logo-full {
+      height: 36px;
+      width: auto;
+      display: block;
+    }
+
+    .brand-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f68c7;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 28px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #4b5563;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .nav-link i { font-size: 14px; }
+
+    .nav-link:hover { color: #0f68c7; }
+
+    .nav-link.active {
+      color: #0f68c7;
+      border-bottom-color: #0f68c7; /* underline only */
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-icon-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #4b5563;
+      font-size: 13px;
+    }
+
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 2px solid #e5e7eb;
+      background: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #4b5563;
+      font-size: 16px;
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main {
+      flex: 1;
+      padding: 24px 0 32px;
+      display: flex;
+      justify-content: center;
+      background: #e5f0ff;
+    }
+
+    .page-container {
+      max-width: 1150px;
+      width: 100%;
+      background: var(--page-bg);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      padding: 20px 24px 26px;
+    }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
+    }
+
+    .card-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .card-title { font-size: 14px; font-weight: 600; color: #111827; }
+
+    .card-subtitle { font-size: 12px; color: var(--muted); }
+
+    /* ===== GREETING CARD ===== */
+    .hero-card {
+      background: #0f68c7;
+      color: #ffffff;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 20px;
+    }
+
+    /* Use real tutor avatar image */
+    .hero-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 3px solid #ffffff;
+      background-image: url("{{ url_for('static', filename='img/hcmut/tutor_avatar/Selection.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .hero-text { display: flex; flex-direction: column; gap: 6px; }
+
+    .hero-greeting { font-size: 18px; font-weight: 700; }
+
+    .hero-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary,
+    .btn-hero-secondary {
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-hero-primary { background: #ffffff; color: #0f68c7; }
+
+    .btn-hero-secondary { background: #0b4ea0; color: #ffffff; }
+
+    .hero-stats-row {
+      margin-top: 14px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat {
+      flex: 1;
+      min-width: 120px;
+      background: #0b58b6;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .hero-stat-label { font-size: 11px; opacity: 0.9; }
+
+    .hero-stat-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
+
+    .hero-stat-rating { display: inline-flex; align-items: center; gap: 4px; }
+
+    .hero-stat-rating i { color: #fbbf24; }
+
+    /* ===== LIST CARDS ===== */
+    .list-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .list-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f9fafb;
+    }
+
+    .mini-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .list-text-main { font-size: 13px; font-weight: 600; color: #111827; }
+
+    .list-text-sub { font-size: 12px; color: #6b7280; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid #16a34a;
+      color: #16a34a;
+      background: #dcfce7;
+    }
+
+    .btn-outline-small,
+    .btn-solid-small {
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-solid-small {
+      background: #0f68c7;
+      color: #ffffff;
+      border-color: #0f68c7;
+    }
+
+    .card-footer-btn {
+      margin-top: 10px;
+      width: 100%;
+      display: inline-block;
+      text-align: center;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background: #0f68c7;
+      color: #ffffff;
+    }
+
+    /* ===== Pending requests ===== */
+    .requests-header {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1.4fr;
+      font-size: 11px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .requests-row {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1.4fr;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f9fafb;
+      font-size: 12px;
+    }
+
+    .request-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .request-avatar-placeholder {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: #d1d5db;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #4b5563;
+      font-size: 12px;
+    }
+
+    /* pill after decision */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .status-accepted { background: #16a34a; } /* green */
+
+    .status-rejected { background: #dc2626; }  /* red */
+
+    /* ===== Performance chart ===== */
+    .chart-wrapper { margin-top: 10px; }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 14px;
+      height: 160px;
+      padding-inline: 4px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .chart-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chart-bar-inner {
+      width: 22px;
+      border-radius: 6px 6px 0 0;
+      background: #0f68c7;
+    }
+
+    .chart-label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 960px) {
+      .page-container { border-radius: 0; }
+      .grid-main { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .navbar-inner { flex-wrap: wrap; gap: 10px; }
+      .nav-links { flex-wrap: wrap; }
+      .page-container { padding: 16px 14px 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- NAVBAR -->
+    <nav class="navbar-main">
+      <div class="navbar-inner">
+        <a href="{{ url_for('tutor_dashboard') }}" class="brand">
+          <img
+            src="{{ url_for('static', filename='img/hcmut/logo.png') }}"
+            alt="BK TutorHub"
+            class="brand-logo-full"
+          >
+        </a>
+
+        <nav class="nav-links">
+          <a href="{{ url_for('tutor_dashboard') }}" class="nav-link active">
+            <i class="fa-solid fa-gauge-high"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="#" class="nav-link">
+            <i class="fa-regular fa-calendar-check"></i>
+            <span>Session Management</span>
+          </a>
+          <a href="#" class="nav-link">
+            <i class="fa-regular fa-comment-dots"></i>
+            <span>Feedback</span>
+          </a>
+          <a href="#" class="nav-link">
+            <i class="fa-regular fa-folder"></i>
+            <span>Resources</span>
+          </a>
+        </nav>
+
+        <div class="nav-right">
+          <button class="nav-icon-btn">
+            <i class="bi bi-bell"></i>
+          </button>
+          <button class="nav-icon-btn">
+            <i class="bi bi-chat-dots"></i>
+          </button>
+          <div class="nav-avatar">
+            <i class="bi bi-person"></i>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="page-container">
+        <div class="grid-main">
+
+          <!-- LEFT COLUMN -->
+          <div class="left-col">
+            <!-- Greeting / Overview -->
+            <section class="hero-card">
+              <div class="hero-avatar"></div>
+              <div class="hero-text">
+                <div class="hero-greeting">Good morning, Hoai Nam!</div>
+                <div class="hero-actions">
+                  <button class="btn-hero-primary">Open a New Session</button>
+                  <button class="btn-hero-secondary">Update My Availability</button>
+                </div>
+                <div class="hero-stats-row">
+                  <div class="hero-stat">
+                    <div class="hero-stat-label">Sessions This Week</div>
+                    <div class="hero-stat-value">5</div>
+                  </div>
+                  <div class="hero-stat">
+                    <div class="hero-stat-label">Average Ratings</div>
+                    <div class="hero-stat-value hero-stat-rating">
+                      <span>4.8</span>
+                      <i class="fa-solid fa-star"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- My Students -->
+            <section class="card" style="margin-top: 14px;">
+              <div class="card-header-row">
+                <div>
+                  <div class="card-title">My Students</div>
+                  <div class="card-subtitle">Track progress for all your students.</div>
+                </div>
+              </div>
+
+              <div class="list-row">
+                <div class="list-item">
+                  <div class="mini-avatar">
+                    <i class="bi bi-person"></i>
+                  </div>
+                  <div>
+                    <div class="list-text-main">Huynh Nguyen Quoc Viet</div>
+                    <div class="list-text-sub">Calculus 1</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="status-pill">On Track</span>
+                    <button class="btn-outline-small">Details</button>
+                  </div>
+                </div>
+
+                <div class="list-item">
+                  <div class="mini-avatar">
+                    <i class="bi bi-person"></i>
+                  </div>
+                  <div>
+                    <div class="list-text-main">Tran Lam Anh</div>
+                    <div class="list-text-sub">Probability and Statistics</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="status-pill">On Track</span>
+                    <button class="btn-outline-small">Details</button>
+                  </div>
+                </div>
+              </div>
+
+              <button class="card-footer-btn">More</button>
+            </section>
+
+            <!-- Pending Requests -->
+            <section class="card" style="margin-top: 14px;">
+              <div class="card-header-row">
+                <div class="card-title">Pending Request(s)</div>
+              </div>
+
+              <div class="requests-header">
+                <div>Student Name</div>
+                <div>Course</div>
+                <div>Decision</div>
+              </div>
+
+              <div class="requests-row">
+                <div class="request-name">
+                  <span class="request-avatar-placeholder">
+                    <i class="bi bi-person"></i>
+                  </span>
+                  <span>Huynh Thi Bich</span>
+                </div>
+                <div>Probability and Statistics (MT2013)</div>
+                <div class="request-actions" style="display:flex;gap:6px;">
+                  <button class="btn-solid-small btn-confirm">Confirm</button>
+                  <button class="btn-outline-small btn-reject">Reject</button>
+                </div>
+              </div>
+
+              <!-- MORE: go to response page -->
+              <a href="{{ url_for('response_page') }}" class="card-footer-btn">More</a>
+            </section>
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="right-col">
+            <!-- Upcoming Sessions -->
+            <section class="card">
+              <div class="card-header-row">
+                <div>
+                  <div class="card-title">Upcoming Sessions</div>
+                  <div class="card-subtitle">Sessions scheduled for this week.</div>
+                </div>
+              </div>
+
+              <div class="list-row">
+                <div class="list-item">
+                  <div class="mini-avatar">
+                    <i class="bi bi-person"></i>
+                  </div>
+                  <div>
+                    <div class="list-text-main">Huynh Nguyen Quoc Viet – Calculus 1</div>
+                    <div class="list-text-sub">Tuesday, 23/10 at 14:00</div>
+                  </div>
+                  <button class="btn-outline-small">Details</button>
+                </div>
+
+                <div class="list-item">
+                  <div class="mini-avatar">
+                    <i class="bi bi-person"></i>
+                  </div>
+                  <div>
+                    <div class="list-text-main">Dang Mau Anh Quan – Calculus 1</div>
+                    <div class="list-text-sub">Wednesday, 24/10 at 7:00</div>
+                  </div>
+                  <button class="btn-outline-small">Details</button>
+                </div>
+
+                <div class="list-item">
+                  <div class="mini-avatar">
+                    <i class="bi bi-person"></i>
+                  </div>
+                  <div>
+                    <div class="list-text-main">Tran Lam Anh – Probability and Statistics</div>
+                    <div class="list-text-sub">Friday, 26/10 at 14:00</div>
+                  </div>
+                  <button class="btn-outline-small">Details</button>
+                </div>
+              </div>
+
+              <button class="card-footer-btn">More</button>
+            </section>
+
+            <!-- Performance Overview -->
+            <section class="card" style="margin-top: 14px;">
+              <div class="card-title">Performance Overview</div>
+              <div class="card-subtitle">Number of sessions per month.</div>
+
+              <div class="chart-wrapper">
+                <div class="chart-bars">
+                  <div class="chart-bar">
+                    <div class="chart-bar-inner" style="height:60px;"></div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="chart-bar-inner" style="height:120px;"></div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="chart-bar-inner" style="height:110px;"></div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="chart-bar-inner" style="height:90px;"></div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="chart-bar-inner" style="height:120px;"></div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="chart-bar-inner" style="height:95px;"></div>
+                  </div>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;margin-top:6px;">
+                  <span class="chart-label">May</span>
+                  <span class="chart-label">June</span>
+                  <span class="chart-label">July</span>
+                  <span class="chart-label">August</span>
+                  <span class="chart-label">September</span>
+                  <span class="chart-label">October</span>
+                </div>
+              </div>
+
+              <button class="card-footer-btn" style="margin-top:12px;">More</button>
+            </section>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Small JS to turn buttons into Accepted / Rejected pills -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".requests-row").forEach(function (row) {
+        const actions = row.querySelector(".request-actions");
+        if (!actions) return;
+
+        const confirmBtn = actions.querySelector(".btn-confirm");
+        const rejectBtn  = actions.querySelector(".btn-reject");
+
+        if (confirmBtn) {
+          confirmBtn.addEventListener("click", function () {
+            actions.innerHTML =
+              '<span class="status-badge status-accepted">Accepted ✓</span>';
+          });
+        }
+
+        if (rejectBtn) {
+          rejectBtn.addEventListener("click", function () {
+            actions.innerHTML =
+              '<span class="status-badge status-rejected">Rejected ✓</span>';
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -44,7 +44,15 @@ USERS = {
         'email': 'admin@hcmut.edu.vn',
         'role': 'admin',
         'name': 'Administrator'
+    },
+    'nguyenB234':{
+        'username': 'nguyenB234',
+        'password': 'tutor123',
+        'email': 'nguyenB@hcmut.edu.vn',
+        'role': 'tutor',
+        'name': 'Nguyễn Văn B'
     }
+    
 }
 
 TUTOR_PROFILE = {

@@ -324,3 +324,32 @@ section {
     border-radius: 0 999px 999px 0;
 }
 
+/* Registration & Navigation Custom Styles */
+.navbar-custom {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 10px 0;
+}
+
+.navbar-logo {
+    height: 34px;    /* small clean logo */
+    width: auto;
+}
+
+.nav-center .nav-link-custom {
+    font-size: 16px;
+    font-weight: 500;
+    color: #0a6efc;
+    text-decoration: none;
+    padding-bottom: 6px;
+    transition: color 0.2s ease;
+}
+
+.nav-center .nav-link-custom:hover {
+    color: #0056c7;
+}
+
+.nav-center .nav-link-custom.active {
+    border-bottom: 3px solid #0a6efc;   /* Blue underline */
+    font-weight: 600;
+}
