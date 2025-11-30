@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="edit-session-container">
+    <h2>Session Management</h2>
+    <button id="create-session-btn" class="edit-session-btn">+ Create New Session</button>
+    
+    <div id="upcoming-sessions">
+        <h3>Upcoming Sessions</h3>
+        <table id="sessions-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Duration</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr data-session-id="{{ session.id }}">
+                    <td>{{ session.student_name }}</td>
+                    <td>{{ session.subject }}</td>
+                    <td class="session-date">{{ session.date }}</td>
+                    <td class="session-time">{{ session.time }}</td>
+                    <td>{{ session.duration }}</td>
+                    <td class="session-location">{{ session.location }}</td>
+                    <td class="session-status">{{ session.status }}</td>
+                    <td>
+                        {% if session.status != 'Cancelled' %}
+                        <button class="edit-session-btn reschedule-btn" data-session-id="{{ session.id }}">Reschedule</button>
+                        <button class="edit-session-btn cancel-btn" data-session-id="{{ session.id }}">Cancel</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Create Session Modal -->
+<div id="createSessionModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Create New Session</h2>
+        <form id="createSessionForm">
+            <div class="form-group">
+                <label for="student_id">Student:</label>
+                <select id="student_id" name="student_id" required>
+                    <option value="">Select a student</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}" data-name="{{ student.name }}">{{ student.name }} ({{ student.student_id }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="time">Time:</label>
+                <input type="time" id="time" name="time" required>
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration:</label>
+                <input type="text" id="duration" name="duration" placeholder="e.g., 2 hours" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" placeholder="e.g., Room B4-301" required>
+            </div>
+            <button type="submit" class="edit-session-btn">Create Session</button>
+        </form>
+    </div>
+</div>
+
+<!-- Reschedule Session Modal -->
+<div id="rescheduleSessionModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Reschedule Session</h2>
+        <form id="rescheduleSessionForm">
+            <input type="hidden" id="reschedule_session_id">
+            <div class="form-group">
+                <label for="reschedule_date">New Date:</label>
+                <input type="date" id="reschedule_date" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="reschedule_time">New Time:</label>
+                <input type="time" id="reschedule_time" name="time" required>
+            </div>
+            <div class="form-group">
+                <label for="reschedule_location">Location:</label>
+                <input type="text" id="reschedule_location" name="location" required>
+            </div>
+            <button type="submit" class="edit-session-btn">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_session.css') }}">
+<script src="{{ url_for('static', filename='js/edit_session.js') }}"></script>
+{% endblock %}
