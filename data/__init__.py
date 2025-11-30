@@ -8,6 +8,9 @@ from .constants import (
     PROGRAM_GALLERY,
     TUTOR_PROFILE,
     RECENT_ACTIVITIES,
+    RESOURCES,
+    KEYWORDS,
+    FILE_TYPES,
 )
 
 __all__ = [
@@ -18,5 +21,8 @@ __all__ = [
     'PROGRAM_GALLERY',
     'TUTOR_PROFILE',
     'RECENT_ACTIVITIES',
+    'RESOURCES',
+    'KEYWORDS',
+    'FILE_TYPES',
 ]
 
